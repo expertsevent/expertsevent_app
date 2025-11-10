@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "840066935814",
+    "project_id": "expertsevent-90321",
+    "storage_bucket": "expertsevent-90321.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840066935814:android:feb313bdc29fe4a113e787",
+        "android_client_info": {
+          "package_name": "com.expert_events.expert_events"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA40ltDqxET4mGf-DILSl46jzg86jKbJqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

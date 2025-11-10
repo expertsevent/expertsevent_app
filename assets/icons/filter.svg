@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <g id="add-button" transform="translate(-0.129 -0.014)">
+    <rect id="Rectangle_2" data-name="Rectangle 2" width="50" height="50" rx="9" transform="translate(0.129 0.014)" fill="#11c9bd"/>
+    <g id="svgexport-7_87_" data-name="svgexport-7 (87)" transform="translate(9.132 9.221)">
+      <g id="Layer_15" data-name="Layer 15">
+        <path id="Path_22758" data-name="Path 22758" d="M26.18,27.18a1,1,0,0,0,1-1V23.07a3.81,3.81,0,0,0,0-7.36V5.82a1,1,0,0,0-2,0v9.9a3.81,3.81,0,0,0,0,7.36v3.11a1,1,0,0,0,1,.99Zm-1.83-7.79a1.83,1.83,0,1,1,1.83,1.83A1.83,1.83,0,0,1,24.35,19.39Z" fill="#fff"/>
+        <path id="Path_22759" data-name="Path 22759" d="M16,27.18a1,1,0,0,0,1-1V12.32a3.83,3.83,0,1,0-2,0V26.18A1,1,0,0,0,16,27.18ZM14.17,8.65A1.83,1.83,0,1,1,16,10.47a1.83,1.83,0,0,1-1.83-1.82Z" fill="#fff"/>
+        <path id="Path_22760" data-name="Path 22760" d="M4.82,19.68v6.5a1,1,0,0,0,2,0v-6.5a3.81,3.81,0,0,0,0-7.36V5.82a1,1,0,0,0-2,0v6.5a3.81,3.81,0,0,0,0,7.36Zm1-5.51A1.83,1.83,0,1,1,4,16a1.83,1.83,0,0,1,1.82-1.83Z" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="43.329" height="82" viewBox="0 0 43.329 82">
+  <g id="destination" transform="translate(-185.27 -806)">
+    <g id="Location_point_01">
+      <circle id="Ellipse_36-2" cx="14.5" cy="14.5" r="14.5" transform="translate(192 859)" fill="#7cacdc" opacity="0.37"/>
+      <ellipse id="Ellipse_37-2" cx="7.5" cy="8" rx="7.5" ry="8" transform="translate(199 865)" fill="#7cacdc"/>
+    </g>
+    <g id="map_pin">
+      <path id="Icon_awesome-map-marker-alt-2" d="M206.934,863.771a2.712,2.712,0,0,1-2.227-1.166c-2.926-4.241-5.385-7.746-7.556-10.837-9.835-14.011-11.882-16.927-11.882-24.1a21.664,21.664,0,1,1,43.329,0c0,7.177-2.047,10.092-11.882,24.1-2.171,3.093-4.632,6.6-7.557,10.838A2.709,2.709,0,0,1,206.934,863.771Zm0-45.134a9.027,9.027,0,1,0,9.027,9.027A9.037,9.037,0,0,0,206.934,818.637Z" fill="#7cacdc"/>
+    </g>
+  </g>
+</svg>

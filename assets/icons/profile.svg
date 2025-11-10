@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16">
+  <g id="profile" transform="translate(-4 -1)">
+    <g id="Group_14502" data-name="Group 14502" transform="translate(4 1)">
+      <g id="Group_14499" data-name="Group 14499" transform="translate(4.1 6.5)">
+        <path id="Path_23225" data-name="Path 23225" d="M14.5,14a2.526,2.526,0,0,0-2.3,1.5h4.6A2.474,2.474,0,0,0,14.5,14Z" transform="translate(-12.2 -14)"/>
+      </g>
+      <g id="Group_14500" data-name="Group 14500" transform="translate(5.4 3.5)">
+        <circle id="Ellipse_132" data-name="Ellipse 132" cx="1" cy="1" r="1"/>
+      </g>
+      <g id="Group_14501" data-name="Group 14501">
+        <path id="Path_23226" data-name="Path 23226" d="M15.1,1H5.9A1.9,1.9,0,0,0,4,2.9V15.1A1.9,1.9,0,0,0,5.9,17h9.2A1.9,1.9,0,0,0,17,15.1V2.9A1.9,1.9,0,0,0,15.1,1ZM8.95,6.85a2.032,2.032,0,0,1-.5-1.35,2,2,0,1,1,4,0,2.245,2.245,0,0,1-.5,1.35,3.611,3.611,0,0,1,1.95,2.6.539.539,0,0,1-.1.4.806.806,0,0,1-.45.15H7.45a.455.455,0,0,1-.4-.2.389.389,0,0,1-.1-.4,3.386,3.386,0,0,1,2-2.55ZM14.5,14.5h-8a.5.5,0,0,1,0-1h8a.5.5,0,0,1,0,1Zm0-2h-8a.5.5,0,0,1,0-1h8a.5.5,0,0,1,0,1Z" transform="translate(-4 -1)"/>
+      </g>
+    </g>
+  </g>
+</svg>

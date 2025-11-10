@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="Menu-icon" transform="translate(-8 -40)">
+    <path id="Rectangle_554" data-name="Rectangle 554" d="M0,0H6A2,2,0,0,1,8,2V6A2,2,0,0,1,6,8H2A2,2,0,0,1,0,6V0A0,0,0,0,1,0,0Z" transform="translate(8 40)"/>
+    <path id="Rectangle_557" data-name="Rectangle 557" d="M2,0H6A2,2,0,0,1,8,2V6A2,2,0,0,1,6,8H0A0,0,0,0,1,0,8V2A2,2,0,0,1,2,0Z" transform="translate(8 52)"/>
+    <path id="Rectangle_555" data-name="Rectangle 555" d="M2,0H8A0,0,0,0,1,8,0V6A2,2,0,0,1,6,8H2A2,2,0,0,1,0,6V2A2,2,0,0,1,2,0Z" transform="translate(20 40)"/>
+    <path id="Rectangle_556" data-name="Rectangle 556" d="M2,0H6A2,2,0,0,1,8,2V8A0,0,0,0,1,8,8H2A2,2,0,0,1,0,6V2A2,2,0,0,1,2,0Z" transform="translate(20 52)"/>
+  </g>
+</svg>
