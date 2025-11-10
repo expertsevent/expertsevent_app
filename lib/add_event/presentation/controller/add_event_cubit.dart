@@ -20,9 +20,11 @@ import '../../data/add_event_repository.dart';
 import '../../models/event_subtype.dart';
 import '../../models/event_type.dart';
 import 'add_event_states.dart';
+import '../../../../core/calendar_util.dart';
 
 class AddEventCubit extends Cubit<AddEventState> {
   AddEventCubit() : super(AddEventInit());
+
   static AddEventCubit get(context) => BlocProvider.of(context);
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -53,7 +55,9 @@ class AddEventCubit extends Cubit<AddEventState> {
   }
 
   bool _uploadImageCheck = false;
+
   bool get uploadImageCheck => _uploadImageCheck;
+
   set uploadImageCheck(bool uploadImageCheck) {
     _uploadImageCheck = uploadImageCheck;
     emit(UploadImageCheckChangeState());
@@ -73,10 +77,13 @@ class AddEventCubit extends Cubit<AddEventState> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
-        lastDate: DateTime(DateTime.now().year + 100));
+        lastDate: DateTime(DateTime
+            .now()
+            .year + 100));
     if (date != null) {
       dob.text =
-      "${date.year}-${date.month < 10 ? "0${date.month}" : date.month}-${date.day < 10 ? "0${date.day}" : date.day}";
+      "${date.year}-${date.month < 10 ? "0${date.month}" : date.month}-${date
+          .day < 10 ? "0${date.day}" : date.day}";
     }
   }
 
@@ -171,6 +178,7 @@ class AddEventCubit extends Cubit<AddEventState> {
   int invitation = 0;
 
   List<String> get contactsCheck => _contactsCheck;
+
   setContactsCheck(index, String contactsCheck) {
     _contactsCheck.add(contactsCheck);
     emit(ContactChangeState());
@@ -191,40 +199,10 @@ class AddEventCubit extends Cubit<AddEventState> {
     emit(ContactsLoadedState());
   }
 
-//////////// 1. Request Permissions Calendars ==================
-  static final DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
-  static Future<bool> requestPermissions() async {
-    final permissionsGranted = await _deviceCalendarPlugin.hasPermissions();
-    if (permissionsGranted.isSuccess && permissionsGranted.data == true) {
-      return true;
-    }
-    final result = await _deviceCalendarPlugin.requestPermissions();
-    return result.isSuccess && result.data == true;
-  }
-///////////////// 2. Create an Event Calendars ==============
-  Future<void> createEvent() async {
-    final hasPermissions = await requestPermissions();
-    if (!hasPermissions) return;
-    final calendarsResult = await _deviceCalendarPlugin.retrieveCalendars();
-    if (!calendarsResult.isSuccess || calendarsResult.data == null || calendarsResult.data!.isEmpty) {
-      if (kDebugMode) {
-        print("❌ No calendars found or permission denied.");
-      }
-      return;
-    }
-    final calendar = calendarsResult.data?.firstWhere(
-          (cal) => cal.isDefault ?? false,
-      orElse: () => calendarsResult.data!.first,
-    );
-    if (calendar == null) {
-      if (kDebugMode) {
-        print("❌ No calendar found to create the event");
-      }
-      return;
-    }
-    // change to your local timezone
-    final locationTimeZone = tz.getLocation('Asia/Riyadh');
-    // Parse date and time separately
+
+///////////////// 1. Create an Event Calendars ==============
+  // Parse date and time separately
+  Future<void> createEvent() async{
     final selectedDate = DateTime.parse(dob.text);
     final selectedTimeParts = time.text.split(':');
     final selectedHour = int.parse(selectedTimeParts[0]);
@@ -241,51 +219,9 @@ class AddEventCubit extends Cubit<AddEventState> {
 
     // Set event duration (example: 2 hours)
     final endDateTime = startDateTime.add(const Duration(hours: 0));
-    //final endDateTime = startDateTime.subtract(const Duration(days: 1));
-    // Check for duplicates
-    final existingEventsResult = await _deviceCalendarPlugin.retrieveEvents(
-      calendar.id,
-      RetrieveEventsParams(
-        startDate: startDateTime,
-        endDate: endDateTime,
-      ),
-    );
+    await CalendarUtils.addAppointmentsToSystemCalendar(startDateTime, endDateTime, eventName.text, desc.text);
 
-    final isDuplicate = existingEventsResult.data?.any((e) =>
-    e.title == eventName.text &&
-        e.start?.isAtSameMomentAs(startDateTime) == true &&
-        e.end?.isAtSameMomentAs(endDateTime) == true) ??
-        false;
-
-    if (isDuplicate) {
-      if (kDebugMode) {
-        print("📅 Skipped duplicate: ${eventName.text}");
-      }
-    }
-    final event = Event(
-      calendar.id,
-      title: eventName.text,
-      start: tz.TZDateTime.from(startDateTime, locationTimeZone),
-      end: tz.TZDateTime.from(endDateTime, locationTimeZone),
-      description: desc.text,
-      location: address.text,
-      reminders: [
-        Reminder(minutes: 60),
-        Reminder(minutes: 30),
-        Reminder(minutes: 15),
-        Reminder(minutes: 5),
-      ],
-
-    );
-
-    final result = await _deviceCalendarPlugin.createOrUpdateEvent(event);
-    if (result!.isSuccess && result.data!.isNotEmpty) {
-      if (kDebugMode) {
-        print("Event created: ${result.data}");
-      }
-    }
   }
-
   ////////////////start Contacts permissions
   Future<void> askPermissions(context) async {
     if (Platform.isAndroid) {
@@ -444,6 +380,7 @@ class AddEventCubit extends Cubit<AddEventState> {
           // Handle or ignore the error
           print('createEvent failed: $e');
         });
+
         if (draft) {
           resetEventData();
           if(package){

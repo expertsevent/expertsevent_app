@@ -12,47 +12,16 @@ import '../../../event/models/events_model.dart';
 import '../../data/invitations_repository.dart';
 import 'invitations_states.dart';
 import 'package:timezone/timezone.dart' as tz;
+import '../../../../core/calendar_util.dart';
 
 class InvitationsCubit extends Cubit<InvitationsStates>{
   InvitationsCubit(): super(InvitationsInitState());
   static InvitationsCubit get(context) => BlocProvider.of(context);
 
 
-//////////// 1. Request Permissions Calendars ==================
-  //////////// 1. Request Permissions Calendars ==================
-  static final device_calendar.DeviceCalendarPlugin _deviceCalendarPlugin = device_calendar.DeviceCalendarPlugin();
-  static Future<bool> requestPermissions() async {
-    final permissionsGranted = await _deviceCalendarPlugin.hasPermissions();
-    if (permissionsGranted.isSuccess && permissionsGranted.data == true) {
-      return true;
-    }
-    final result = await _deviceCalendarPlugin.requestPermissions();
-    return result.isSuccess && result.data == true;
-  }
-///////////////// 2. Create an Event Calendars ==============
-  Future<void> createEvent({String? eventName,String? eventDate,String? eventTime,String? eventLocation,String? eventContent}) async {
-    final hasPermissions = await requestPermissions();
-    if (!hasPermissions) return;
-    final calendarsResult = await _deviceCalendarPlugin.retrieveCalendars();
-    if (!calendarsResult.isSuccess || calendarsResult.data == null || calendarsResult.data!.isEmpty) {
-      if (kDebugMode) {
-        print("❌ No calendars found or permission denied.");
-      }
-      return;
-    }
-    final calendar = calendarsResult.data?.firstWhere(
-          (cal) => cal.isDefault ?? false,
-      orElse: () => calendarsResult.data!.first,
-    );
-    if (calendar == null) {
-      if (kDebugMode) {
-        print("❌ No calendar found to create the event");
-      }
-      return;
-    }
-    // change to your local timezone
-    final locationTimeZone = tz.getLocation('Asia/Riyadh');
-    // Parse date and time separately
+///////////////// 1. Create an Event Calendars ==============
+  // Parse date and time separately
+  Future<void> createEvent({String? eventName,String? eventDate,String? eventTime,String? eventLocation,String? eventContent}) async{
     final selectedDate = DateTime.parse(eventDate!);
     final selectedTimeParts = eventTime!.split(':');
     final selectedHour = int.parse(selectedTimeParts[0]);
@@ -68,53 +37,10 @@ class InvitationsCubit extends Cubit<InvitationsStates>{
     );
 
     // Set event duration (example: 2 hours)
-   final endDateTime = startDateTime.add(const Duration(hours: 0));
-    //final endDateTime = startDateTime.subtract(const Duration(days: 1));
-    // Check for duplicates
-    final existingEventsResult = await _deviceCalendarPlugin.retrieveEvents(
-      calendar.id,
-      device_calendar.RetrieveEventsParams(
-        startDate: startDateTime,
-        endDate: endDateTime,
-      ),
-    );
+    final endDateTime = startDateTime.add(const Duration(hours: 0));
+    await CalendarUtils.addAppointmentsToSystemCalendar(startDateTime, endDateTime, eventName!, eventContent!);
 
-    final isDuplicate = existingEventsResult.data?.any((e) =>
-    e.title == eventName! &&
-        e.start?.isAtSameMomentAs(startDateTime) == true &&
-        e.end?.isAtSameMomentAs(endDateTime) == true) ??
-        false;
-
-    if (isDuplicate) {
-      if (kDebugMode) {
-        print("📅 Skipped duplicate: ${eventName!}");
-      }
-    }
-    final event = device_calendar.Event(
-      calendar.id,
-      title: eventName!,
-      start: tz.TZDateTime.from(startDateTime, locationTimeZone),
-      end: tz.TZDateTime.from(endDateTime, locationTimeZone),
-      description: eventContent!,
-      location: eventLocation!,
-      reminders: [
-        device_calendar.Reminder(minutes: 60),
-        device_calendar.Reminder(minutes: 30),
-        device_calendar.Reminder(minutes: 15),
-        device_calendar.Reminder(minutes: 5),
-      ],
-
-    );
-
-    final result = await _deviceCalendarPlugin.createOrUpdateEvent(event);
-    if (result!.isSuccess && result.data!.isNotEmpty) {
-      if (kDebugMode) {
-        print("Event created: ${result.data}");
-      }
-    }
   }
-
-
 
   String endPoint = '';
   EventsModel? invitationsModel;

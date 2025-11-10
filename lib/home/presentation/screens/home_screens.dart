@@ -21,6 +21,7 @@ import 'package:expert_events/auth/presentation/controller/auth/auth_states.dart
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 

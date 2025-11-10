@@ -24,6 +24,7 @@ import 'intro/presentation/screens/splash_screen.dart';
 import 'layout/presentation/controller/bottom_nav_cubit.dart';
 import 'core/cash_helper.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
+import 'core/calendar_util.dart';
 
 Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -38,6 +39,7 @@ Future<void> main() async {
 
   await AppUtil().initNotification();
   await AppUtil().getContactPermission();
+  await CalendarUtils.requestCalendarPermission();
   //NetworkInfo.initialize();
   afStart();
   runApp(
