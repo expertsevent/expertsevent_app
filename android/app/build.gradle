@@ -9,12 +9,19 @@ plugins {
 android {
     namespace = "com.expert_events.expert_events"
     compileSdk = 35
-    ndkVersion = "26.1.10909125"
+    ndkVersion = "29.0.14206865"
+    //ndkVersion "28.1.13356709"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
     }
 
     kotlinOptions {
@@ -26,9 +33,9 @@ android {
         applicationId = "com.expert_events.expert_events"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        minSdkVersion = flutter.minSdkVersion
         targetSdk = 35
-        versionCode 49
+        versionCode 52
         versionName '1.0'
         multiDexEnabled true
     }
@@ -57,8 +64,8 @@ flutter {
     source = "../.."
 }
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.5.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation platform('com.google.firebase:firebase-bom:33.4.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
     implementation 'androidx.window:window:1.3.0'
     implementation 'androidx.window:window-java:1.3.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'

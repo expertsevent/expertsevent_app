@@ -10,7 +10,7 @@ class NetworkInfo {
   static void initialize() {
     Connectivity().onConnectivityChanged.listen((result) async {
       // check actual internet (not just wifi/mobile)
-      bool hasInternet = await InternetConnectionChecker().hasConnection;
+      bool hasInternet = await InternetConnectionChecker.instance.hasConnection;
       _controller.add(hasInternet);
     });
   }

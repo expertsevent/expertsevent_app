@@ -1,13 +1,13 @@
 buildscript {
-    ext.kotlin_version = '1.9.24'//'2.1.0'
+    ext.kotlin_version = '2.1.0'//'2.1.0'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {  
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools.build:gradle:8.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.gms:google-services:4.4.2'
     }
 }
 
@@ -42,6 +42,15 @@ subprojects {
                 compileSdkVersion androidApiVersion
                 defaultConfig {
                     targetSdkVersion androidApiVersion
+                    // This block is different from the one you use to link Gradle
+                    // to your CMake or ndk-build script.
+                    externalNativeBuild {
+                        // For ndk-build, instead use the ndkBuild block.
+                        cmake {
+                            // Passes optional arguments to CMake.
+                            arguments += ["-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"]
+                        }
+                    }
                 }
                 compileOptions {
                     sourceCompatibility javaVersion

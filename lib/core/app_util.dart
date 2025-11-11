@@ -147,8 +147,7 @@ class AppUtil {
   ) async {
     try {
       List<geocoding.Placemark> placeMarks = await geocoding
-          .placemarkFromCoordinates(latLng.latitude, latLng.longitude,
-              localeIdentifier: await CashHelper.getSavedString("lang", ""));
+          .placemarkFromCoordinates(latLng.latitude, latLng.longitude);
 
       geocoding.Placemark placemark = placeMarks[0];
 

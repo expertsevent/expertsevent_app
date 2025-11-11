@@ -1,4 +1,4 @@
-import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -215,33 +215,32 @@ class GuardsCubit extends Cubit<GuardsSates>{
     // contactsCheckTrue.clear();
     emit(ContactsGuardLoadingState());
     try {
-      contacts = search.isEmpty
-          ? await ContactsService.getContacts(
-            withThumbnails: false,
-            photoHighResolution: false,
-            iOSLocalizedLabels: false,
-      )
-          : await ContactsService.getContacts( query: search,
-            withThumbnails: false,
-            photoHighResolution: false,
-            iOSLocalizedLabels: false,
+      final contacts = await FlutterContacts.getContacts(
+        withThumbnail: false,
+        withPhoto: true,
+        withProperties: true,
       );
-      contacts.removeWhere((element) => element.phones == null || element.phones!.isEmpty || element.displayName == null);
+      final filtered = search.isEmpty
+          ? contacts
+          : contacts.where((c) =>
+          c.displayName.toLowerCase().contains(search.toLowerCase())).toList();
+
+      filtered.removeWhere((element) => element.phones == null || element.phones!.isEmpty || element.displayName == null);
       int i = 0;
-      for (var _ in contacts) {
+      for (var _ in filtered) {
         int y = 0;
-        for (var element2 in contacts[i].phones!) {
-          contacts[i].phones![y].value = element2.value!.replaceAll(" ", "");
+        for (var element2 in filtered[i].phones!) {
+          filtered[i].phones![y].number = element2.number!.replaceAll(" ", "");
           y++;
         }
         i++;
       }
       i = 0;
-      for (var element in contacts) {
-        contacts[i].phones = [...{...element.phones!}];
+      for (var element in filtered) {
+        filtered[i].phones = [...{...element.phones!}];
         i++;
       }
-      if (contacts.isEmpty) {
+      if (filtered.isEmpty) {
         emit(ContactsGuardEmptyState());
       } else {
         emit(ContactsGuardLoadedState());
@@ -253,12 +252,11 @@ class GuardsCubit extends Cubit<GuardsSates>{
   }
   addContact() async {
     Contact newContact = Contact(
-        familyName: contactName.text,
         displayName: contactName.text,
-        androidAccountName: contactName.text,
-        phones: [Item(label: "", value: "+${contactCountryCode.text}${contactPhone.text}")]);
+        phones: [Item(label: "", value: "+${contactCountryCode.text}${contactPhone.text}")]
+    );
     try {
-      await ContactsService.addContact(newContact);
+      await FlutterContacts.insertContact(newContact);
       getContacts();
       emit(ContactsGuardLoadedState());
     } catch (e) {

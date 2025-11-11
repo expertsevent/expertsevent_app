@@ -1461,7 +1461,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                         children: [
                                           CustomText(
                                             text:
-                                            "${cubit.phones.isEmpty ? widget.event.visitors.length : cubit.phones.length }/${cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList().length} ${"selected".tr()}",
+                                            "${cubit.phones.isEmpty ? widget.event.visitors.length : cubit.phones.length }/${cubit.contacts.where((element) => (element.displayName ?? '').toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList().length} ${"selected".tr()}",
                                             fontWeight: FontWeight.bold,
                                           ),
                                           const Spacer(),
