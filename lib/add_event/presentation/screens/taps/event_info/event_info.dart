@@ -592,7 +592,7 @@ class _EventInfoState extends State<EventInfo> {
                                             .toLowerCase()))
                                     .toList()[i]
                                     .phones![0]
-                                    .value!);
+                                    .number!);
                                 cubit.names.add(cubit.contacts
                                     .where((element) => element.displayName!
                                         .toLowerCase()
@@ -685,7 +685,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                 .toLowerCase()))
                                                         .toList()[index]
                                                         .phones![0]
-                                                        .value!,
+                                                        .number!,
                                                     style: const TextStyle(
                                                       color: AppUI.blackColor,
                                                     ),
@@ -724,7 +724,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                         .toLowerCase()))
                                                                 .toList()[index]
                                                                 .phones![0]
-                                                                .value!)
+                                                                .number!)
                                                             ? true
                                                             : false,
                                                         onChanged: (v) {
@@ -741,7 +741,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                   .toList()[
                                                                       index]
                                                                   .phones![0]
-                                                                  .value!);
+                                                                  .number!);
                                                           if (v!) {
                                                             cubit.names.add(cubit
                                                                     .contacts
@@ -778,7 +778,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                             cubit.searchContact.text.toLowerCase()))
                                                                     .toList()[index]
                                                                     .phones![0]
-                                                                    .value!);
+                                                                    .number!);
                                                           } else {
                                                             cubit.names.remove(cubit
                                                                     .contacts
@@ -815,7 +815,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                             cubit.searchContact.text.toLowerCase()))
                                                                     .toList()[index]
                                                                     .phones![0]
-                                                                    .value!);
+                                                                    .number!);
                                                           }
                                                         });
                                                   } else {
@@ -864,7 +864,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                     .toLowerCase()))
                                                             .toList()[index]
                                                             .phones![index2]
-                                                            .value!,
+                                                            .number!,
                                                         style: const TextStyle(
                                                           color:
                                                               AppUI.blackColor,
@@ -892,7 +892,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                             index]
                                                                         .phones![
                                                                             index2]
-                                                                        .value!)
+                                                                        .number!)
                                                                     ? true
                                                                     : false,
                                                                 onChanged: (v) {
@@ -908,7 +908,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                               index]
                                                                           .phones![
                                                                               index2]
-                                                                          .value!);
+                                                                          .number!);
                                                                   if (v!) {
                                                                     cubit.names.add(cubit
                                                                             .contacts
@@ -932,7 +932,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                                 element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase()))
                                                                             .toList()[index]
                                                                             .phones![index2]
-                                                                            .value!);
+                                                                            .number!);
                                                                   } else {
                                                                     cubit.names.remove(cubit
                                                                             .contacts
@@ -956,7 +956,7 @@ class _EventInfoState extends State<EventInfo> {
                                                                                 element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase()))
                                                                             .toList()[index]
                                                                             .phones![index2]
-                                                                            .value!);
+                                                                            .number!);
                                                                   }
                                                                 });
                                                           }),
@@ -1097,7 +1097,7 @@ class _EventInfoState extends State<EventInfo> {
                                     .toLowerCase()))
                                     .toList()[i]
                                     .phones![0]
-                                    .value!);
+                                    .number!);
                                 cubit.names.add(cubit.contacts
                                     .where((element) => element.displayName!
                                     .toLowerCase()

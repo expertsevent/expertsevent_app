@@ -1628,7 +1628,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                         .toLowerCase()))
                                                         .toList()[index]
                                                         .phones![0]
-                                                        .value!,
+                                                        .number!,
                                                     style: const TextStyle(
                                                       color: AppUI.blackColor,
                                                     ),
@@ -1664,7 +1664,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                             .text
                                                             .toLowerCase()))
                                                             .toList()[index].phones![0]
-                                                            .value!)).isNotEmpty
+                                                            .number!)).isNotEmpty
                                                             ? true
                                                             : false,
                                                         onChanged: (v) {
@@ -1681,7 +1681,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                   .toList()[
                                                               index]
                                                                   .phones![0]
-                                                                  .value!);
+                                                                  .number!);
                                                           if (v!) {
                                                             cubit.names.add(cubit
                                                                 .contacts
@@ -1718,7 +1718,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                 cubit.searchContact.text.toLowerCase()))
                                                                 .toList()[index]
                                                                 .phones![0]
-                                                                .value!);
+                                                                .number!);
                                                           } else {
                                                             cubit.names.remove(cubit
                                                                 .contacts
@@ -1755,7 +1755,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                 cubit.searchContact.text.toLowerCase()))
                                                                 .toList()[index]
                                                                 .phones![0]
-                                                                .value!);
+                                                                .number!);
                                                           }
                                                           print(cubit.names);
                                                           print(cubit.phones);
@@ -1806,7 +1806,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                             .toLowerCase()))
                                                             .toList()[index]
                                                             .phones![index2]
-                                                            .value!,
+                                                            .number!,
                                                         style: const TextStyle(
                                                           color:
                                                           AppUI.blackColor,
@@ -1834,7 +1834,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                 index]
                                                                     .phones![
                                                                 index2]
-                                                                    .value!).isNotEmpty
+                                                                    .number!).isNotEmpty
                                                                     ? true
                                                                     : false,
                                                                 onChanged: (v) {
@@ -1850,7 +1850,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                       index]
                                                                           .phones![
                                                                       index2]
-                                                                          .value!);
+                                                                          .number!);
                                                                   if (v!) {
                                                                     cubit.names.add(cubit
                                                                         .contacts
@@ -1874,7 +1874,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                         element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase()))
                                                                         .toList()[index]
                                                                         .phones![index2]
-                                                                        .value!);
+                                                                        .number!);
                                                                   } else {
                                                                     cubit.names.remove(cubit
                                                                         .contacts
@@ -1898,7 +1898,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                                                         element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase()))
                                                                         .toList()[index]
                                                                         .phones![index2]
-                                                                        .value!);
+                                                                        .number!);
                                                                   }
                                                                 });
                                                           }),
