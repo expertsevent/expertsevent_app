@@ -292,7 +292,7 @@ class _AddGuardScreenState extends State<AddGuardScreen> {
                                         ? ""
                                         : cubit
                                         .contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index]
-                                        .phones![0].value!;
+                                        .phones![0].number!;
                                     Navigator.pop(context);
 
                                   }:null,
@@ -315,7 +315,7 @@ class _AddGuardScreenState extends State<AddGuardScreen> {
                                               CustomText(text: cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].displayName??"",color: AppUI.blackColor,fontWeight: FontWeight.bold,),
                                               const SizedBox(height: 5,),
                                               if(cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].phones!.length == 1)
-                                                Text(cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].phones![0].value!,style: const TextStyle(
+                                                Text(cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].phones![0].number!,style: const TextStyle(
                                                   color: AppUI.blackColor,
                                                 ),textDirection: ui.TextDirection.ltr,),
                                             ],
@@ -338,7 +338,7 @@ class _AddGuardScreenState extends State<AddGuardScreen> {
                                                     ? ""
                                                     : cubit
                                                     .contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index]
-                                                    .phones![index2].value!;
+                                                    .phones![index2].number!;
                                                 Navigator.pop(context);
                                               },
                                               child: Column(
@@ -347,7 +347,7 @@ class _AddGuardScreenState extends State<AddGuardScreen> {
                                                   Row(
                                                     children: [
                                                       const SizedBox(width: 40,height: 40,),
-                                                      Text(cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].phones![index2].value!,style: const TextStyle(
+                                                      Text(cubit.contacts.where((element) => element.displayName!.toLowerCase().contains(cubit.searchContact.text.toLowerCase())).toList()[index].phones![index2].number!,style: const TextStyle(
                                                         color: AppUI.blackColor,
                                                       ),textDirection: ui.TextDirection.ltr,),
                                                     ],

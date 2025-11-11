@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+
 import 'package:device_calendar/device_calendar.dart';
 import 'package:expert_events/event/presentation/controller/events/events_cubit.dart';
 import 'package:flutter/foundation.dart';
@@ -188,7 +189,7 @@ class AddEventCubit extends Cubit<AddEventState> {
     _contactsCheck.clear();
     for (var element in contacts) {
       for (var element in element.phones!) {
-        _contactsCheck.add(element.value!);
+        _contactsCheck.add(element.number!);
       }
     }
     emit(ContactsLoadedState());
@@ -261,39 +262,36 @@ class AddEventCubit extends Cubit<AddEventState> {
     // contactsCheckTrue.clear();
     emit(ContactsLoadingState());
     try {
-      contacts = search.isEmpty
-          ? await ContactsService.getContacts(
-        withThumbnails: false,
-        photoHighResolution: false,
-        iOSLocalizedLabels: false,
-      )
-          : await ContactsService.getContacts(
-        query: search,
-        withThumbnails: false,
-        photoHighResolution: false,
-        iOSLocalizedLabels: false,
+      contacts = await FlutterContacts.getContacts(
+        withThumbnail: false,
+        withPhoto: true,
+        withProperties: true,
       );
-      contacts.removeWhere(
+      final filtered = search.isEmpty
+          ? contacts
+          : contacts.where((c) =>
+          c.displayName.toLowerCase().contains(search.toLowerCase())).toList();
+      filtered.removeWhere(
               (element) => element.phones == null || element.phones!.isEmpty || element.displayName == null);
       int i = 0;
-      for (var element in contacts) {
-        contacts[i].displayName = contacts[i].displayName ?? '';
+      for (var element in filtered) {
+        filtered[i].displayName = filtered[i].displayName ?? '';
         int y = 0;
-        for (var element2 in contacts[i].phones!) {
-          contacts[i].phones![y].value = element2.value!.replaceAll(" ", "");
+        for (var element2 in filtered[i].phones!) {
+          filtered[i].phones![y].number = element2.number!.replaceAll(" ", "");
           y++;
         }
         i++;
       }
       i = 0;
-      for (var element in contacts) {
-        contacts[i].phones = [
+      for (var element in filtered) {
+        filtered[i].phones = [
           ...{...element.phones!}
         ];
         i++;
       }
 
-      if (contacts.isEmpty) {
+      if (filtered.isEmpty) {
         emit(ContactsEmptyState());
       } else {
         emit(ContactsLoadedState());
@@ -311,16 +309,12 @@ class AddEventCubit extends Cubit<AddEventState> {
 
   addContact() async {
     Contact newContact = Contact(
-        familyName: contactName.text,
         displayName: contactName.text,
-        androidAccountName: contactName.text,
         phones: [
-          Item(
-              label: "",
-              value: "+${contactCountryCode.text}${contactPhone.text}")
+          Phone("+${contactCountryCode.text}${contactPhone.text}")
         ]);
     try {
-      await ContactsService.addContact(newContact);
+      await FlutterContacts.insertContact(newContact);
       getContacts();
       emit(ContactsLoadedState());
     } catch (e) {

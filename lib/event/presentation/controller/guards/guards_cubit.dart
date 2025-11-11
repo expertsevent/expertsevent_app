@@ -215,7 +215,7 @@ class GuardsCubit extends Cubit<GuardsSates>{
     // contactsCheckTrue.clear();
     emit(ContactsGuardLoadingState());
     try {
-      final contacts = await FlutterContacts.getContacts(
+      contacts = await FlutterContacts.getContacts(
         withThumbnail: false,
         withPhoto: true,
         withProperties: true,
@@ -253,7 +253,7 @@ class GuardsCubit extends Cubit<GuardsSates>{
   addContact() async {
     Contact newContact = Contact(
         displayName: contactName.text,
-        phones: [Item(label: "", value: "+${contactCountryCode.text}${contactPhone.text}")]
+        phones: [Phone("+${contactCountryCode.text}${contactPhone.text}")]
     );
     try {
       await FlutterContacts.insertContact(newContact);
