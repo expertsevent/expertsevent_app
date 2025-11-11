@@ -40,7 +40,8 @@ Future<void> main() async {
   await AppUtil().initNotification();
   await AppUtil().getContactPermission();
   await CalendarUtils.requestCalendarPermission();
-  //NetworkInfo.initialize();
+  // initialize connectivity watcher
+  NetworkInfo.initialize();
   afStart();
   runApp(
     EasyLocalization(
@@ -48,7 +49,7 @@ Future<void> main() async {
         path: 'lang',
         fallbackLocale: const Locale('ar'),
        // startLocale: const Locale('ar'),
-        child: const MyApp()),
+        child: const NetworkListener(child: MyApp())),
   );
 
   // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -214,5 +215,55 @@ class MyApp extends StatelessWidget {
         home: const SplashScreen(),
       ),
     );
+  }
+}
+
+/// A small top-level widget that listens to `NetworkInfo.stream` and shows
+/// a persistent SnackBar when the device goes offline and a brief message
+/// when it comes back online.
+class NetworkListener extends StatefulWidget {
+  final Widget child;
+  const NetworkListener({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<NetworkListener> createState() => _NetworkListenerState();
+}
+
+class _NetworkListenerState extends State<NetworkListener> {
+  late final StreamSubscription<bool> _sub;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _offlineSnack;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = NetworkInfo.stream.listen((connected) {
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      if (!connected) {
+        // show a persistent offline message
+        _offlineSnack = messenger.showSnackBar(const SnackBar(
+          content: Text('No internet connection'),
+          duration: Duration(days: 1), // effectively persistent until dismissed
+        ));
+      } else {
+        // dismiss offline snack if present and show a short online message
+        _offlineSnack?.close();
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Back online'),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
