@@ -50,7 +50,7 @@ Future<void> main() async {
         path: 'lang',
         fallbackLocale: const Locale('ar'),
        // startLocale: const Locale('ar'),
-        child: const NetworkListener(child: MyApp())),
+        child: const  MyApp()),
   );
 
   // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -213,7 +213,7 @@ class MyApp extends StatelessWidget {
                 textStyle: Theme.of(context).textTheme.bodyLarge),
           ),
         ),
-        home: const SplashScreen(),
+        home: const SplashScreen(), //NetworkListener(child: SplashScreen())
       ),
     );
   }
@@ -246,6 +246,7 @@ class _NetworkListenerState extends State<NetworkListener> {
           content: Text('No internet connection'),
           duration: Duration(days: 1), // effectively persistent until dismissed
         ));
+        print('No internet connection');
       } else {
         // dismiss offline snack if present and show a short online message
         _offlineSnack?.close();
@@ -253,6 +254,7 @@ class _NetworkListenerState extends State<NetworkListener> {
           content: Text('Back online'),
           duration: Duration(seconds: 2),
         ));
+        print('internet connection');
       }
     });
   }

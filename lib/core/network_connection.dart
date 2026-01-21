@@ -7,11 +7,17 @@ class NetworkInfo {
 
   static Stream<bool> get stream => _controller.stream;
 
-  static void initialize() {
+  static void initialize() async {
+    // Emit initial internet status
+    bool initialStatus = await InternetConnectionChecker.instance.hasConnection;
+    _controller.add(initialStatus);
+    print('NetworkInfo initialized: $initialStatus');
+
+    // Listen for connectivity changes
     Connectivity().onConnectivityChanged.listen((result) async {
-      // check actual internet (not just wifi/mobile)
       bool hasInternet = await InternetConnectionChecker.instance.hasConnection;
       _controller.add(hasInternet);
+      print('NetworkInfo changed: $hasInternet');
     });
   }
 }
