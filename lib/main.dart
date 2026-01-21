@@ -26,10 +26,8 @@ import 'layout/presentation/controller/bottom_nav_cubit.dart';
 import 'core/cash_helper.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'core/calendar_util.dart';
-import 'package:flutter_smartlook/flutter_smartlook.dart';
 
 Future<void> main() async {
-  final Smartlook smartlook = Smartlook.instance;
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark, // use Brightness.dark if color is light
@@ -46,8 +44,6 @@ Future<void> main() async {
   // initialize connectivity watcher
   NetworkInfo.initialize();
   afStart();
-  smartlook.start();
-  smartlook.preferences.setProjectKey('5499f45fab81a50cc61cf8dacc655f5bb3fdfb2b');
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],

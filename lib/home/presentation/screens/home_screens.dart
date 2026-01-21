@@ -20,6 +20,7 @@ import 'package:expert_events/auth/presentation/controller/auth/auth_cubit.dart'
 import 'package:expert_events/auth/presentation/controller/auth/auth_states.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
+import 'package:flutter_smartlook/flutter_smartlook.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -33,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late final cubit = HomeCubit.get(context);
   late final authcubit = AuthCubit.get(context);
   late final eventcubit = AddEventCubit.get(context);
+  final Smartlook smartlook = Smartlook.instance;
+
   var templateIds = [1,2,3,4,5];
 
 
@@ -40,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    smartlook.start();
+    smartlook.preferences.setProjectKey('5499f45fab81a50cc61cf8dacc655f5bb3fdfb2b');
     cubit.getEvents();
     cubit.getInvitations();
     cubit.showHideAds();
