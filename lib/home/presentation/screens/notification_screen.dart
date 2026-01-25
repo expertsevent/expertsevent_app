@@ -51,20 +51,55 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         children: List.generate(cubit.notificationModel!.invites!.length, (index) {
                           return Column(
                             children: [
-                              Row(
-                                children: [
-                                  const Icon(Icons.circle_notifications,size: 50,color: AppUI.mainColor,),
-                                  const SizedBox(width: 15,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CustomText(text: cubit.notificationModel!.invites![index].eventname==null?"":cubit.notificationModel!.invites![index].eventname!.name!,fontSize: 20,fontWeight: FontWeight.bold,),
-                                      SizedBox(width:  AppUtil.responsiveWidth(context)*0.70,
-                                          child: CustomText(text: cubit.notificationModel!.invites![index].message!,color: AppUI.bottomBarColor,)
+                              InkWell(
+                                onTap: () {
+                                  final invite = cubit.notificationModel!.invites![index];
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: CustomText(
+                                        text: invite.eventname?.name ?? '',
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ],
-                                  )
-                                ],
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CustomText(text: invite.message ?? ''),
+                                          if (invite.reason != null && invite.reason!.isNotEmpty) ...[
+                                            const SizedBox(height: 10),
+                                            CustomText(
+                                              text: '${'reason'.tr()}: ${invite.reason}',
+                                              color: AppUI.bottomBarColor,
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: CustomText(text: 'ok'.tr()),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.circle_notifications, size: 50, color: AppUI.mainColor,),
+                                    const SizedBox(width: 15,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(text: cubit.notificationModel!.invites![index].eventname == null ? "" : cubit.notificationModel!.invites![index].eventname!.name!, fontSize: 20, fontWeight: FontWeight.bold,),
+                                        SizedBox(width: AppUtil.responsiveWidth(context) * 0.70,
+                                          child: CustomText(text: cubit.notificationModel!.invites![index].message!, color: AppUI.bottomBarColor,)
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                               const Divider()
                             ],

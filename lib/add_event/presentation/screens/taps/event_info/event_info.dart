@@ -288,7 +288,7 @@ class _EventInfoState extends State<EventInfo> {
                     }
 
                     if (widget.event == null) {
-                      if (cubit.names.isEmpty) {
+                      if (cubit.phones.isEmpty) {
                         AppUtil.errorToast(context, "selectVisitors".tr());
                         return;
                       }

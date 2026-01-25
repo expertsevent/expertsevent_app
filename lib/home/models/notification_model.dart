@@ -30,19 +30,21 @@ class Invites {
   String? eventId;
   String? userId;
   String? message;
+  String? reason;
   String? num;
   String? status;
   String? createdAt;
   String? updatedAt;
   Eventname? eventname;
 
-  Invites({this.id, this.eventId, this.userId, this.message, this.num, this.status, this.createdAt, this.updatedAt, this.eventname});
+  Invites({this.id, this.eventId, this.userId, this.message,this.reason, this.num, this.status, this.createdAt, this.updatedAt, this.eventname});
 
   Invites.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     eventId = json["event_id"];
     userId = json["user_id"];
     message = json["message"];
+    reason = json["reason"];
     num = json["num"];
     status = json["status"];
     createdAt = json["created_at"];
@@ -56,6 +58,7 @@ class Invites {
     _data["event_id"] = eventId;
     _data["user_id"] = userId;
     _data["message"] = message;
+    _data["reason"] = reason;
     _data["num"] = num;
     _data["status"] = status;
     _data["created_at"] = createdAt;

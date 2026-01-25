@@ -14,6 +14,9 @@ import '../../../core/ui/app_ui.dart';
 import '../../../home/presentation/controller/home_cubit.dart';
 import '../../../more/presentation/controller/more_cubit.dart';
 import '../controller/intro_cubit.dart';
+import 'package:flutter_smartlook/flutter_smartlook.dart';
+import '../../../core/calendar_util.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -25,11 +28,12 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   StreamSubscription? _sub;
   late final cubit = HomeCubit.get(context);
+  final Smartlook smartlook = Smartlook.instance;
   late AppsflyerSdk _appsflyerSdk;
   Map _deepLinkData = {};
   Map _gcd = {};
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
     final cubit = IntroCubit.get(context);
@@ -37,10 +41,14 @@ class _SplashScreenState extends State<SplashScreen> {
     MoreCubit.get(context);
     cubit.navigateToNextScreen(context);
     HomeCubit.get(context).showHideAds();
+    smartlook.start();
+    smartlook.preferences.setProjectKey('5499f45fab81a50cc61cf8dacc655f5bb3fdfb2b');
     afStart();
   }
 
   void afStart() async {
+    await AppUtil().getContactPermission();
+    await CalendarUtils.requestCalendarPermission();
     // SDK Options
     final AppsFlyerOptions options = AppsFlyerOptions(
         afDevKey: "HD7GQojLRGobHMFApdaSGZ"!,

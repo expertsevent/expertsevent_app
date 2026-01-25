@@ -25,25 +25,23 @@ import 'intro/presentation/screens/splash_screen.dart';
 import 'layout/presentation/controller/bottom_nav_cubit.dart';
 import 'core/cash_helper.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
-import 'core/calendar_util.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark, // use Brightness.dark if color is light
+      statusBarBrightness: Brightness.light,
     ),
   );
-  WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await Firebase.initializeApp();
   tzdata.initializeTimeZones();
 
   await AppUtil().initNotification();
-  await AppUtil().getContactPermission();
-  await CalendarUtils.requestCalendarPermission();
   // initialize connectivity watcher
   NetworkInfo.initialize();
-  afStart();
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],
@@ -78,91 +76,6 @@ Future<void> storeDeviceLanguageIfNotChosen(BuildContext context) async {
   }
 }
 
-void afStart() async {
-  late AppsflyerSdk _appsflyerSdk;
-  Map _deepLinkData = {};
-  Map _gcd = {};
-
-  // SDK Options
-  final AppsFlyerOptions options = AppsFlyerOptions(
-      afDevKey: "HD7GQojLRGobHMFApdaSGZ",
-      appId: Platform.isAndroid ? "com.expert_events.expert_events"! : "1661312796"!,
-      showDebug: true,
-      timeToWaitForATTUserAuthorization: 15,
-      manualStart: true);
-  /*
-    final Map? map = {
-      'afDevKey': dotenv.env["DEV_KEY"]!,
-      'appId': dotenv.env["APP_ID"]!,
-      'isDebug': true,
-      'timeToWaitForATTUserAuthorization': 15.0//,
-      //'manualStart': false
-    };
-    _appsflyerSdk = AppsflyerSdk(map);
-     */
-  _appsflyerSdk = AppsflyerSdk(options);
-
-  /*
-    Setting configuration to the SDK:
-    _appsflyerSdk.setCurrencyCode("USD");
-    _appsflyerSdk.enableTCFDataCollection(true);
-    var forGdpr = AppsFlyerConsent.forGDPRUser(hasConsentForDataUsage: true, hasConsentForAdsPersonalization: true);
-    _appsflyerSdk.setConsentData(forGdpr);
-    var nonGdpr = AppsFlyerConsent.nonGDPRUser();
-    _appsflyerSdk.setConsentData(nonGdpr);
-     */
-
-  // Init of AppsFlyer SDK
-  await _appsflyerSdk.initSdk(
-      registerConversionDataCallback: true,
-      registerOnAppOpenAttributionCallback: true,
-      registerOnDeepLinkingCallback: true);
-
-  // Conversion data callback
-  _appsflyerSdk.onInstallConversionData((res) {
-    print("onInstallConversionData res: " + res.toString());
-    // setState(() {
-      _gcd = res;
-    // });
-  });
-
-  // App open attribution callback
-  _appsflyerSdk.onAppOpenAttribution((res) {
-    print("onAppOpenAttribution res: " + res.toString());
-    // setState(() {
-      _deepLinkData = res;
-    // });
-  });
-
-  // Deep linking callback
-  _appsflyerSdk.onDeepLinking((DeepLinkResult dp) {
-    switch (dp.status) {
-      case Status.FOUND:
-        print(dp.deepLink?.toString());
-        print("deep link value: ${dp.deepLink?.deepLinkValue}");
-        break;
-      case Status.NOT_FOUND:
-        print("deep link not found");
-        break;
-      case Status.ERROR:
-        print("deep link error: ${dp.error}");
-        break;
-      case Status.PARSE_ERROR:
-        print("deep link status parsing error");
-        break;
-    }
-    print("onDeepLinking res: " + dp.toString());
-    // setState(() {
-      _deepLinkData = dp.toJson();
-    // });
-  });
-
-  //_appsflyerSdk.anonymizeUser(true);
-  if (Platform.isAndroid) {
-    _appsflyerSdk.performOnDeepLinking();
-  }
-  // setState(() {}); // Call setState to rebuild the widget
-}
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   // This widget is the root of your application.
