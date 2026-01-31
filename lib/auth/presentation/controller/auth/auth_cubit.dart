@@ -17,7 +17,7 @@ import '../../screens/verification_screen.dart';
 import '../../screens/verify_account.dart';
 import 'auth_states.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
