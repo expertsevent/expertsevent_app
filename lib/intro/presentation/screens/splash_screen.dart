@@ -106,14 +106,22 @@ class _SplashScreenState extends State<SplashScreen> {
         registerOnAppOpenAttributionCallback: true,
         registerOnDeepLinkingCallback: true);
 
-    // Start SDK with await
-    await _appsflyerSdk.startSDK(
+    // Get AppsFlyer UID for debugging
+    _appsflyerSdk.getAppsFlyerUID().then((uid) {
+      print("AppsFlyer UID: $uid");
+    });
+
+    // Start SDK
+    _appsflyerSdk.startSDK(
       onSuccess: () {
-        print("AppsFlyer SDK initialized successfully.");
+        print("AppsFlyer SDK started successfully.");
+        // Log a test event to verify tracking
+        _appsflyerSdk.logEvent("af_app_opened", {});
+        print("AppsFlyer: Logged af_app_opened event");
       },
       onError: (int errorCode, String errorMessage) {
         print(
-            "Error initializing AppsFlyer SDK: Code $errorCode - $errorMessage");
+            "Error starting AppsFlyer SDK: Code $errorCode - $errorMessage");
       },
     );
   }
