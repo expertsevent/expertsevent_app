@@ -51,21 +51,16 @@ class _SplashScreenState extends State<SplashScreen> {
     await CalendarUtils.requestCalendarPermission();
     // SDK Options
     final AppsFlyerOptions options = AppsFlyerOptions(
-        afDevKey: "HD7GQojLRGobHMFApdaSGZ"!,
+        afDevKey: "HD7GQojLRGobHMFApdaSGZ",
         appId: Platform.isAndroid
-            ? "com.expert_events.expert_events"!
-            : "1661312796"!,
+            ? "com.expert_events.expert_events"
+            : "1661312796",
         showDebug: true,
         timeToWaitForATTUserAuthorization: 15,
         manualStart: true);
     _appsflyerSdk = AppsflyerSdk(options);
 
-    // Init of AppsFlyer SDK
-    await _appsflyerSdk.initSdk(
-        registerConversionDataCallback: true,
-        registerOnAppOpenAttributionCallback: true,
-        registerOnDeepLinkingCallback: true);
-
+    // Register callbacks BEFORE initSdk
     // Conversion data callback
     _appsflyerSdk.onInstallConversionData((res) {
       print("onInstallConversionData res: " + res.toString());
@@ -105,8 +100,14 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
 
+    // Init of AppsFlyer SDK AFTER registering callbacks
+    await _appsflyerSdk.initSdk(
+        registerConversionDataCallback: true,
+        registerOnAppOpenAttributionCallback: true,
+        registerOnDeepLinkingCallback: true);
 
-    _appsflyerSdk.startSDK(
+    // Start SDK with await
+    await _appsflyerSdk.startSDK(
       onSuccess: () {
         print("AppsFlyer SDK initialized successfully.");
       },
