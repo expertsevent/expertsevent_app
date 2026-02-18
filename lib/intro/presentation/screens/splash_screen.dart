@@ -29,9 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   StreamSubscription? _sub;
   late final cubit = HomeCubit.get(context);
   final Smartlook smartlook = Smartlook.instance;
-  late AppsflyerSdk _appsflyerSdk;
-  Map _deepLinkData = {};
-  Map _gcd = {};
+  
   @override
   void initState()  {
     // TODO: implement initState
@@ -43,87 +41,15 @@ class _SplashScreenState extends State<SplashScreen> {
     HomeCubit.get(context).showHideAds();
     smartlook.start();
     smartlook.preferences.setProjectKey('5499f45fab81a50cc61cf8dacc655f5bb3fdfb2b');
-    afStart();
+    requestPermissions();
   }
 
-  void afStart() async {
-    await AppUtil().getContactPermission();
-    await CalendarUtils.requestCalendarPermission();
-    // SDK Options
-    final AppsFlyerOptions options = AppsFlyerOptions(
-        afDevKey: "HD7GQojLRGobHMFApdaSGZ",
-        appId: Platform.isAndroid
-            ? "com.expert_events.expert_events"
-            : "1661312796",
-        showDebug: true,
-        timeToWaitForATTUserAuthorization: 15,
-        manualStart: true);
-    _appsflyerSdk = AppsflyerSdk(options);
-
-    // Register callbacks BEFORE initSdk
-    // Conversion data callback
-    _appsflyerSdk.onInstallConversionData((res) {
-      print("onInstallConversionData res: " + res.toString());
-      setState(() {
-        _gcd = res;
-      });
-    });
-
-    // App open attribution callback
-    _appsflyerSdk.onAppOpenAttribution((res) {
-      print("onAppOpenAttribution res: " + res.toString());
-      setState(() {
-        _deepLinkData = res;
-      });
-    });
-
-    // Deep linking callback
-    _appsflyerSdk.onDeepLinking((DeepLinkResult dp) {
-      switch (dp.status) {
-        case Status.FOUND:
-          print(dp.deepLink?.toString());
-          print("deep link value: ${dp.deepLink?.deepLinkValue}");
-          break;
-        case Status.NOT_FOUND:
-          print("deep link not found");
-          break;
-        case Status.ERROR:
-          print("deep link error: ${dp.error}");
-          break;
-        case Status.PARSE_ERROR:
-          print("deep link status parsing error");
-          break;
-      }
-      print("onDeepLinking res: " + dp.toString());
-      setState(() {
-        _deepLinkData = dp.toJson();
-      });
-    });
-
-    // Init of AppsFlyer SDK AFTER registering callbacks
-    await _appsflyerSdk.initSdk(
-        registerConversionDataCallback: true,
-        registerOnAppOpenAttributionCallback: true,
-        registerOnDeepLinkingCallback: true);
-
-    // Get AppsFlyer UID for debugging
-    _appsflyerSdk.getAppsFlyerUID().then((uid) {
-      print("AppsFlyer UID: $uid");
-    });
-
-    // Start SDK
-    _appsflyerSdk.startSDK(
-      onSuccess: () {
-        print("AppsFlyer SDK started successfully.");
-        // Log a test event to verify tracking
-        _appsflyerSdk.logEvent("af_app_opened", {});
-        print("AppsFlyer: Logged af_app_opened event");
-      },
-      onError: (int errorCode, String errorMessage) {
-        print(
-            "Error starting AppsFlyer SDK: Code $errorCode - $errorMessage");
-      },
-    );
+  void requestPermissions() async {
+    // Permissions are requested here to ensure they happen early, 
+    // but AppsFlyer SDK is now initialized in main.dart to ensure persistence.
+    // These calls are fire-and-forget.
+    AppUtil().getContactPermission();
+    CalendarUtils.requestCalendarPermission();
   }
 
   @override

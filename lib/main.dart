@@ -76,8 +76,74 @@ Future<void> storeDeviceLanguageIfNotChosen(BuildContext context) async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late AppsflyerSdk _appsflyerSdk;
+
+  @override
+  void initState() {
+    super.initState();
+    _initAppsFlyer();
+  }
+
+  void _initAppsFlyer() {
+    final AppsFlyerOptions options = AppsFlyerOptions(
+        afDevKey: "HD7GQojLRGobHMFApdaSGZ",
+        appId: Platform.isAndroid
+            ? "com.expert_events.expert_events"
+            : "1661312796",
+        showDebug: true,
+        timeToWaitForATTUserAuthorization: 15,
+        manualStart: true);
+    _appsflyerSdk = AppsflyerSdk(options);
+
+    _appsflyerSdk.onInstallConversionData((res) {
+      print("AppsFlyer onInstallConversionData: " + res.toString());
+    });
+
+    _appsflyerSdk.onAppOpenAttribution((res) {
+      print("AppsFlyer onAppOpenAttribution: " + res.toString());
+    });
+
+    _appsflyerSdk.onDeepLinking((DeepLinkResult dp) {
+      switch (dp.status) {
+        case Status.FOUND:
+          print("AppsFlyer DeepLink found: ${dp.deepLink?.toString()}");
+          break;
+        case Status.NOT_FOUND:
+          print("AppsFlyer DeepLink not found");
+          break;
+        case Status.ERROR:
+          print("AppsFlyer DeepLink error: ${dp.error}");
+          break;
+        case Status.PARSE_ERROR:
+          print("AppsFlyer DeepLink parse error");
+          break;
+      }
+    });
+
+    _appsflyerSdk.initSdk(
+        registerConversionDataCallback: true,
+        registerOnAppOpenAttributionCallback: true,
+        registerOnDeepLinkingCallback: true);
+
+    _appsflyerSdk.startSDK(
+      onSuccess: () {
+        print("AppsFlyer SDK started successfully in main.");
+        _appsflyerSdk.logEvent("af_app_opened", {});
+      },
+      onError: (int errorCode, String errorMessage) {
+        print("Error starting AppsFlyer SDK: Code $errorCode - $errorMessage");
+      },
+    );
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
