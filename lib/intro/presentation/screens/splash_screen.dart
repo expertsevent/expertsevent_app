@@ -32,24 +32,25 @@ class _SplashScreenState extends State<SplashScreen> {
   
   @override
   void initState()  {
-    // TODO: implement initState
     super.initState();
-    final cubit = IntroCubit.get(context);
     AddEventCubit.get(context);
     MoreCubit.get(context);
-    cubit.navigateToNextScreen(context);
     HomeCubit.get(context).showHideAds();
     smartlook.start();
     smartlook.preferences.setProjectKey('5499f45fab81a50cc61cf8dacc655f5bb3fdfb2b');
-    requestPermissions();
+    _initAndNavigate();
   }
 
-  void requestPermissions() async {
-    // Permissions are requested here to ensure they happen early, 
-    // but AppsFlyer SDK is now initialized in main.dart to ensure persistence.
-    // These calls are fire-and-forget.
-    AppUtil().getContactPermission();
-    CalendarUtils.requestCalendarPermission();
+  void _initAndNavigate() async {
+    // Request permissions first
+    await AppUtil().getContactPermission();
+    await CalendarUtils.requestCalendarPermission();
+    
+    // Then navigate to next screen
+    if (mounted) {
+      final cubit = IntroCubit.get(context);
+      cubit.navigateToNextScreen(context);
+    }
   }
 
   @override

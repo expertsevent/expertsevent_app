@@ -92,17 +92,24 @@ class _MyAppState extends State<MyApp> {
     _initAppsFlyer();
   }
 
-  void _initAppsFlyer() {
+  void _initAppsFlyer() async {
+    // Configure AppsFlyer
     final AppsFlyerOptions options = AppsFlyerOptions(
         afDevKey: "HD7GQojLRGobHMFApdaSGZ",
-        appId: Platform.isAndroid
-            ? "com.expert_events.expert_events"
-            : "1661312796",
+        appId: Platform.isAndroid ? "" : "1661312796", // Empty for Android, iOS App Store ID for iOS
         showDebug: true,
         timeToWaitForATTUserAuthorization: 15,
-        manualStart: true);
+        disableAdvertisingIdentifier: false,
+        disableCollectASA: false,
+        manualStart: false);
     _appsflyerSdk = AppsflyerSdk(options);
 
+    // Set customer user ID if available (helps with tracking)
+    // _appsflyerSdk.setCustomerUserId("user_id_here");
+
+    print("AppsFlyer: Initializing SDK...");
+
+    // Register callbacks BEFORE initSdk
     _appsflyerSdk.onInstallConversionData((res) {
       print("AppsFlyer onInstallConversionData: " + res.toString());
     });
@@ -128,20 +135,16 @@ class _MyAppState extends State<MyApp> {
       }
     });
 
-    _appsflyerSdk.initSdk(
+    // Initialize SDK - will auto start since manualStart is false
+    await _appsflyerSdk.initSdk(
         registerConversionDataCallback: true,
         registerOnAppOpenAttributionCallback: true,
         registerOnDeepLinkingCallback: true);
 
-    _appsflyerSdk.startSDK(
-      onSuccess: () {
-        print("AppsFlyer SDK started successfully in main.");
-        _appsflyerSdk.logEvent("af_app_opened", {});
-      },
-      onError: (int errorCode, String errorMessage) {
-        print("Error starting AppsFlyer SDK: Code $errorCode - $errorMessage");
-      },
-    );
+    // Get AppsFlyer UID for debugging
+    String? uid = await _appsflyerSdk.getAppsFlyerUID();
+    print("AppsFlyer UID: $uid");
+    print("AppsFlyer: SDK initialized");
   }
 
   // This widget is the root of your application.
