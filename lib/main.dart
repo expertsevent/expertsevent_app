@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
     // Configure AppsFlyer
     final AppsFlyerOptions options = AppsFlyerOptions(
         afDevKey: "HD7GQojLRGobHMFApdaSGZ",
-        appId: Platform.isAndroid ? "" : "1661312796", // Empty for Android, iOS App Store ID for iOS
+        appId: Platform.isAndroid ? "com.expert_events.expert_events" : "1661312796", // Empty for Android, iOS App Store ID for iOS
         showDebug: true,
         timeToWaitForATTUserAuthorization: 15,
         disableAdvertisingIdentifier: false,
