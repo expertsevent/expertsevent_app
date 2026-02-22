@@ -7,7 +7,14 @@ class EventsModel {
   EventsModel({required this.status, required this.errNum, required this.msg, required this.data});
 
   factory EventsModel.fromJson(Map<String, dynamic> json) {
-    return EventsModel(status: json["status"], errNum: json["errNum"], msg: json["msg"], data: json["data"] == null ? (json["invites"] as List).map((e) => Event.fromJson(e)).toList() : (json["data"] as List).map((e) => Event.fromJson(e)).toList());
+    return EventsModel(
+      status: json["status"] ?? false,
+      errNum: json["errNum"]?.toString() ?? "",
+      msg: json["msg"]?.toString() ?? "",
+      data: json["data"] == null 
+        ? (json["invites"] as List?)?.map((e) => Event.fromJson(e)).toList() ?? []
+        : (json["data"] as List?)?.map((e) => Event.fromJson(e)).toList() ?? []
+    );
   }
 
   Map<String, dynamic> toJson() {

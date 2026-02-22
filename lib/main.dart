@@ -2,7 +2,11 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:expert_events/invitations/presentation/controller/invitations_cubit.dart';
 import 'package:expert_events/more/presentation/controller/more_cubit.dart';
 import 'package:expert_events/more/presentation/controller/wallet/wallet_cubit.dart';
@@ -85,11 +89,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AppsflyerSdk _appsflyerSdk;
+  late FacebookAppEvents facebookAppEvents;
 
   @override
   void initState() {
     super.initState();
     _initAppsFlyer();
+    _initFacebookAppEvents();
   }
 
   void _initAppsFlyer() async {
@@ -145,6 +151,59 @@ class _MyAppState extends State<MyApp> {
     String? uid = await _appsflyerSdk.getAppsFlyerUID();
     print("AppsFlyer UID: $uid");
     print("AppsFlyer: SDK initialized");
+  }
+
+  void _initFacebookAppEvents() async {
+    // Initialize Facebook App Events
+    facebookAppEvents = FacebookAppEvents();
+    
+    // Get dynamic device and app information
+    final deviceInfo = DeviceInfoPlugin();
+    final packageInfo = await PackageInfo.fromPlatform();
+    final connectivity = Connectivity();
+    final connectivityResult = await connectivity.checkConnectivity();
+    
+    // Get device-specific data
+    String deviceModel = 'unknown';
+    String osVersion = 'unknown';
+    String deviceId = 'unknown';
+    
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      deviceModel = androidInfo.model ?? 'unknown';
+      osVersion = androidInfo.version.release ?? 'unknown';
+      deviceId = androidInfo.id ?? 'unknown';
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      deviceModel = iosInfo.model ?? 'unknown';
+      osVersion = iosInfo.systemVersion ?? 'unknown';
+      deviceId = iosInfo.identifierForVendor ?? 'unknown';
+    }
+    
+    // Log app activation event with dynamic parameters
+    await facebookAppEvents.logEvent(
+      name: 'fb_mobile_activate_app',
+      parameters: {
+        'fb_content_type': 'app',
+        'fb_content_id': 'experts_event_app',
+        'fb_currency': 'USD',
+        'fb_value': '1.0',
+        'fb_registration_method': 'organic',
+        'fb_first_open': 'true',
+        'fb_time': DateTime.now().millisecondsSinceEpoch.toString(),
+        'fb_device_id': deviceId,
+        'fb_os_version': osVersion,
+        'fb_app_version': packageInfo.version,
+        'fb_sdk_version': '0.19.2',
+        'fb_device_model': deviceModel,
+        'fb_network_type': connectivityResult.toString().split('.').last, // Dynamic network type
+        'fb_language': Platform.localeName.split('_')[0], // Dynamic language from device locale
+        'fb_timezone': DateTime.now().timeZoneName,
+      },
+    );
+    
+    print("Facebook App Events initialized with dynamic data");
+    print("Device: $deviceModel, OS: $osVersion, App: ${packageInfo.version}");
   }
 
   // This widget is the root of your application.

@@ -42,9 +42,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _initAndNavigate() async {
-    // Request permissions first
-    await AppUtil().getContactPermission();
-    await CalendarUtils.requestCalendarPermission();
+    // Request permissions with error handling
+    try {
+      await AppUtil().getContactPermission();
+    } catch (e) {
+      print("Contact permission error: $e");
+    }
+    
+    try {
+      await CalendarUtils.requestCalendarPermission();
+    } catch (e) {
+      print("Calendar permission error: $e");
+      // Calendar permission is optional - continue even if denied
+    }
     
     // Then navigate to next screen
     if (mounted) {

@@ -47,6 +47,10 @@
 	<string>This app requires access to the photo library to pick event photo</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>We need access to your calendar to manage events and reminders.</string>
+	<key>FacebookAppID</key>
+	<string>1587698705892312</string>
+	<key>FacebookClientToken</key>
+	<string>a3caff28a97c537ae1b162fcad0dc9ad</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
