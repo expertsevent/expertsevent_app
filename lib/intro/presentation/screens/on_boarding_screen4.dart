@@ -64,7 +64,7 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
                             AppUtil.mainNavigator(context, const SignInScreen());
                           },),
                           const SizedBox(height: 13,),
-                          CustomButton(text: "loginAsGuest".tr(),onPressed: (){
+                          CustomButton(text: "tutorial".tr(),onPressed: (){
                             AppUtil.mainNavigator(context, const GuestScreenEn());
                           },borderColor: AppUI.buttonColor,color: AppUI.secondColor,textColor: AppUI.whiteColor,),
                         ],

@@ -400,7 +400,16 @@
   "Total" : "Total",
   "Email is required" : "Email is required",
   "Enter a valid Saudi phone number" : "Enter a valid Saudi phone number",
-  "Phone is required" : "Phone is required"
+  "Phone is required" : "Phone is required",
+  "tutorial" : "Tutorial",
+  "skip" : "Skip",
+  "nextVideo" : "Next Video",
+  "tutorialCompleted" : "You're all set!",
+  "readyToStart" : "Sign up now to start creating your own events.",
+  "tutorialVideoRegister" : "How to register",
+  "tutorialVideoCreateEvent" : "How to create an event",
+  "tutorialVideoAddGuests" : "How to add guests",
+  "tutorialVideoCancelEvent" : "How to postpone or cancel"
 
 
 

@@ -398,7 +398,16 @@
   "Total" : "الإجمالي",
   "Email is required" : "البريد الالكتروني مطلوب",
   "Enter a valid Saudi phone number" : "الرقم غير صحيح",
-  "Phone is required" : "زقم الهاتف مطلوب"
+  "Phone is required" : "زقم الهاتف مطلوب",
+  "tutorial" : "الشرح",
+  "skip" : "تخطي",
+  "nextVideo" : "الفيديو التالي",
+  "tutorialCompleted" : "أنت جاهز للبدء!",
+  "readyToStart" : "سجّل الآن لتبدأ في إنشاء مناسباتك الخاصة.",
+  "tutorialVideoRegister" : "كيفية التسجيل في التطبيق",
+  "tutorialVideoCreateEvent" : "كيفية إنشاء مناسبة",
+  "tutorialVideoAddGuests" : "كيفية إضافة مدعوين",
+  "tutorialVideoCancelEvent" : "كيفية تأجيل أو إلغاء المناسبة"
 
 
 
