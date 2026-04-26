@@ -91,77 +91,75 @@ class _GuestScreenEnState extends State<GuestScreenEn> {
       ),
       builder: (context, player) {
         final progress = (_currentIndex + 1) / _videos.length;
+        final showFinishCard = _isLastVideo && _currentVideoEnded;
         return Scaffold(
           backgroundColor: AppUI.whiteColor,
-          appBar: AppBar(
-            backgroundColor: AppUI.whiteColor,
-            elevation: 0.5,
-            iconTheme: const IconThemeData(color: AppUI.greyColor),
-            centerTitle: true,
-            title: CustomText(
-              text: 'tutorial'.tr(),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              textAlign: TextAlign.center,
+          extendBodyBehindAppBar: false,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(72),
+            child: _TutorialAppBar(
+              title: 'tutorial'.tr(),
+              skipLabel: 'skip'.tr(),
+              onSkip: _goToSignIn,
             ),
-            actions: [
-              TextButton(
-                onPressed: _goToSignIn,
-                child: CustomText(
-                  text: 'skip'.tr(),
-                  color: AppUI.mainColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
           ),
           body: SafeArea(
+            top: false,
             child: Column(
               children: [
-                player,
-                const SizedBox(height: 12),
+                // Compact progress strip just below the app bar.
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: CustomText(
-                          text: _currentVideo.titleKey.tr(),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 6,
+                            backgroundColor: AppUI.backgroundColor,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppUI.mainColor),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
                       CustomText(
                         text: '${_currentIndex + 1} / ${_videos.length}',
                         color: AppUI.greyColor,
-                        fontSize: 14,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 6,
-                      backgroundColor: AppUI.backgroundColor,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppUI.mainColor),
-                    ),
-                  ),
-                ),
+                // The whole middle area centers the player + title + (after
+                // the last video) the registration prompt card, so the
+                // page never has a big white gap regardless of which
+                // video is currently playing.
+
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (_isLastVideo && _currentVideoEnded)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: player,
+                        ),
+                        const SizedBox(height: 16),
+                        CustomText(
+                          text: _currentVideo.titleKey.tr(),
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          textAlign: TextAlign.center,
+                        ),
+                        if (showFinishCard) ...[
+                          const SizedBox(height: 20),
                           _RegisterPromptCard(onRegister: _goToSignIn),
+                        ],
                       ],
                     ),
                   ),
@@ -172,9 +170,7 @@ class _GuestScreenEnState extends State<GuestScreenEn> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       CustomButton(
-                        text: _isLastVideo
-                            ? 'register'.tr()
-                            : 'nextVideo'.tr(),
+                        text: _isLastVideo ? 'register'.tr() : 'nextVideo'.tr(),
                         onPressed: _isLastVideo
                             ? _goToSignIn
                             : () => _goToVideo(_currentIndex + 1),
@@ -208,6 +204,90 @@ class _TutorialVideo {
   const _TutorialVideo({required this.id, required this.titleKey});
 }
 
+/// Branded top bar for the tutorial screen. Uses a gradient in the app's
+/// primary palette, rounded bottom corners, a soft drop shadow, and a
+/// pill-shaped "Skip" action so it reads as part of the brand instead of
+/// a default white Material AppBar.
+class _TutorialAppBar extends StatelessWidget {
+  final String title;
+  final String skipLabel;
+  final VoidCallback onSkip;
+  const _TutorialAppBar({
+    Key? key,
+    required this.title,
+    required this.skipLabel,
+    required this.onSkip,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+    return Container(
+      padding: EdgeInsets.only(top: topInset),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppUI.mainColor, AppUI.buttonColor],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x264970AE), // mainColor @ ~15% alpha
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        height: 56,
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppUI.whiteColor),
+              onPressed: () => Navigator.of(context).maybePop(),
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            ),
+            Expanded(
+              child: CustomText(
+                text: title,
+                color: AppUI.whiteColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: InkWell(
+                onTap: onSkip,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0x33FFFFFF), // 20% white pill
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: CustomText(
+                    text: skipLabel,
+                    color: AppUI.whiteColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _RegisterPromptCard extends StatelessWidget {
   final VoidCallback onRegister;
   const _RegisterPromptCard({Key? key, required this.onRegister})
@@ -220,7 +300,8 @@ class _RegisterPromptCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppUI.inputColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0x264970AE)), // mainColor @ 15% alpha
+        border:
+            Border.all(color: const Color(0x264970AE)), // mainColor @ 15% alpha
       ),
       child: Column(
         children: [
