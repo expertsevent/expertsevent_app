@@ -9,6 +9,7 @@ import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 import '../../../layout/presentation/screens/layout_screen.dart';
 import 'guest/guest_en.dart';
+
 class OnBoardingScreen4 extends StatefulWidget {
   const OnBoardingScreen4({Key? key}) : super(key: key);
 
@@ -22,7 +23,12 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset("${AppUI.imgPath}splash.png",height: double.infinity,width: double.infinity,fit: BoxFit.fill,),
+          Image.asset(
+            "${AppUI.imgPath}splash.png",
+            height: double.infinity,
+            width: double.infinity,
+            fit: BoxFit.fill,
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -34,10 +40,16 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
                     alignment: Alignment.bottomCenter,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 40,right: 50),
-                        child: Image.asset("${AppUI.imgPath}onboarding1_background.png",height: 250,),
+                        padding: const EdgeInsets.only(left: 40, right: 50),
+                        child: Image.asset(
+                          "${AppUI.imgPath}onboarding1_background.png",
+                          height: 250,
+                        ),
                       ),
-                      Image.asset("${AppUI.imgPath}onboarding4_gif.gif",height: 230,),
+                      Image.asset(
+                        "${AppUI.imgPath}onboarding4_gif.gif",
+                        height: 230,
+                      ),
                     ],
                   ),
                 ),
@@ -47,29 +59,55 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
                 child: Card(
                   elevation: 1,
                   shape: const RoundedRectangleBorder(
-                    borderRadius:  BorderRadius.only(topRight: Radius.circular(50),topLeft: Radius.circular(50)),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(50),
+                        topLeft: Radius.circular(50)),
                   ),
                   color: AppUI.whiteColor,
                   child: Container(
                     decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(50),topLeft: Radius.circular(50)),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(50),
+                          topLeft: Radius.circular(50)),
                       color: AppUI.whiteColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children:  [
-                          CustomText(text: "Now you can have a wonderful Event".tr(),fontWeight: FontWeight.w600,fontSize: 26,textAlign: TextAlign.center,),
-                          const SizedBox(height: 25,),
-                          CustomButton(text: "signIn".tr(),onPressed: (){
-                            AppUtil.mainNavigator(context, const SignInScreen());
-                          },),
-                          const SizedBox(height: 13,),
-                          CustomButton(text: "tutorial".tr(),onPressed: (){
-                            AppUtil.mainNavigator(context, const GuestScreenEn());
-                          },borderColor: AppUI.buttonColor,color: AppUI.secondColor,textColor: AppUI.whiteColor,),
-                          const SizedBox(height: 13,),
+                        children: [
+                          CustomText(
+                            text: "Now you can have a wonderful Event".tr(),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 26,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomButton(
+                            text: "signIn".tr(),
+                            onPressed: () {
+                              AppUtil.mainNavigator(
+                                  context, const SignInScreen());
+                            },
+                          ),
+                          const SizedBox(
+                            height: 13,
+                          ),
+                          CustomButton(
+                            text: "tutorial".tr(),
+                            onPressed: () {
+                              AppUtil.mainNavigator(
+                                  context, const GuestScreenEn());
+                            },
+                            borderColor: AppUI.buttonColor,
+                            color: AppUI.secondColor,
+                            textColor: AppUI.whiteColor,
+                          ),
+                          const SizedBox(
+                            height: 13,
+                          ),
                           CustomButton(
                             text: "loginAsGuest".tr(),
                             onPressed: () async {
@@ -88,8 +126,14 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
                   ),
                 ),
               )
-            ],),
-          Image.asset("${AppUI.imgPath}onboarding4_forground.gif",height: AppUtil.responsiveHeight(context)*0.75,width: double.infinity,fit: BoxFit.fill,),
+            ],
+          ),
+          Image.asset(
+            "${AppUI.imgPath}onboarding4_forground.gif",
+            height: AppUtil.responsiveHeight(context) * 0.75,
+            width: double.infinity,
+            fit: BoxFit.fill,
+          ),
         ],
       ),
     );
