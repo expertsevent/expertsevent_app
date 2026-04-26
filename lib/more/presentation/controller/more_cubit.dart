@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/cash_helper.dart';
+import '../../../core/guest_mode.dart';
 import '../../../event/models/events_model.dart' as event;
 import '../screens/pages/profile/delete_account_page.dart';
 
@@ -78,6 +79,11 @@ class MoreCubit extends Cubit<MoreStates>{
   DashboardModel? dashboardModel;
 
   getDashboard() async {
+    if (GuestMode.isGuest) {
+      dashboardModel = GuestMode.buildMockDashboard();
+      emit(DashboardLoadedState());
+      return;
+    }
     emit(DashboardLoadingState());
     try{
       Map<String,dynamic> response = await MoreRepository.getDashboard();
@@ -124,6 +130,10 @@ class MoreCubit extends Cubit<MoreStates>{
   event.Event? selectedEvent;
   event.EventsModel? eventsModel;
   getUserEvents() async {
+    if (GuestMode.isGuest) {
+      eventsModel = GuestMode.buildEmptyEvents();
+      return;
+    }
     try{
       Map<String,dynamic> response = await MoreRepository.getUserEvents();
       eventsModel = event.EventsModel.fromJson(response);

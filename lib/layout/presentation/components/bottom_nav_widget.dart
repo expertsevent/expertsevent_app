@@ -7,6 +7,7 @@ import '../../../../../core/ui/app_ui.dart';
 import '../../../../../core/ui/components.dart';
 import '../../../add_event/presentation/screens/add_event_screen.dart';
 import '../../../core/app_util.dart';
+import '../../../core/guest_mode.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Function() onTap0,onTap1,onTap2,onTap3;
@@ -27,6 +28,10 @@ class BottomNavBar extends StatelessWidget {
               padding: const EdgeInsets.only(top: 7),
               child: InkWell(
                 onTap: (){
+                  if (GuestMode.guard(context,
+                      message: 'createEventLoginRequired'.tr())) {
+                    return;
+                  }
                   AppUtil.mainNavigator(context, const AddEventsScreen());
                 },
                 child: const CircleAvatar(

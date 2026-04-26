@@ -19,6 +19,7 @@ import 'add_event/presentation/controller/add_event_cubit.dart';
 import 'auth/presentation/controller/auth/auth_cubit.dart';
 import 'auth/presentation/controller/forget_pass/forget_pass_cubit.dart';
 import 'core/app_util.dart';
+import 'core/guest_mode.dart';
 import 'core/network_connection.dart';
 import 'core/ui/app_ui.dart';
 import 'event/presentation/controller/events/events_cubit.dart';
@@ -52,6 +53,11 @@ Future<void> main() async {
   // Cheap, synchronous setup.
   tzdata.initializeTimeZones();
   NetworkInfo.initialize();
+
+  // Hydrate the guest-mode flag from SharedPreferences before any cubits
+  // fire (several start in MyApp.build). They check `GuestMode.isGuest`
+  // synchronously to skip authenticated network calls.
+  await GuestMode.load();
 
   // Notification setup talks to Firebase Messaging + flutter_local_notifications
   // and previously blocked the first frame. It does not need to complete

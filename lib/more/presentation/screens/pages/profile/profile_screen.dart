@@ -12,6 +12,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../../../../auth/presentation/screens/forgot_pass/change_pass.dart';
 import '../../../../../core/app_util.dart';
 import '../../../../../core/cash_helper.dart';
+import '../../../../../core/guest_mode.dart';
 import '../../../../../core/ui/app_ui.dart';
 import '../../../../../core/ui/components.dart';
 import '../../../../../main.dart';
@@ -124,6 +125,7 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: 14,
                     ),
+                    if (GuestMode.isGuest) GuestMode.buildRegisterBanner(context),
                     Container(
                       margin: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -167,6 +169,10 @@ class ProfileScreen extends StatelessWidget {
                                 //       const SizedBox(height: 20,),
                                 InkWell(
                                   onTap: () {
+                                    if (GuestMode.guard(context,
+                                        message: 'profileLoginRequired'.tr())) {
+                                      return;
+                                    }
                                     AppUtil.mainNavigator(
                                         context, const EditProfile());
                                   },
@@ -267,6 +273,7 @@ class ProfileScreen extends StatelessWidget {
                                 const SizedBox(
                                   height: 20,
                                 ),
+                                if (!GuestMode.isGuest)
                                 InkWell(
                                   onTap: () {
                                     showAlertDialog(context, morecubit);

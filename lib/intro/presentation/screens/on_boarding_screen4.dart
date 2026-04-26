@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import '../../../auth/presentation/screens/register_screen.dart';
 import '../../../auth/presentation/screens/sign_in_screen.dart';
 import '../../../core/app_util.dart';
+import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
+import '../../../layout/presentation/screens/layout_screen.dart';
 import 'guest/guest_en.dart';
 class OnBoardingScreen4 extends StatefulWidget {
   const OnBoardingScreen4({Key? key}) : super(key: key);
@@ -67,6 +69,19 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
                           CustomButton(text: "tutorial".tr(),onPressed: (){
                             AppUtil.mainNavigator(context, const GuestScreenEn());
                           },borderColor: AppUI.buttonColor,color: AppUI.secondColor,textColor: AppUI.whiteColor,),
+                          const SizedBox(height: 13,),
+                          CustomButton(
+                            text: "loginAsGuest".tr(),
+                            onPressed: () async {
+                              await GuestMode.enter();
+                              if (!context.mounted) return;
+                              AppUtil.removeUntilNavigator(
+                                  context, const LayoutScreen());
+                            },
+                            borderColor: AppUI.mainColor,
+                            color: AppUI.whiteColor,
+                            textColor: AppUI.mainColor,
+                          ),
                         ],
                       ),
                     ),

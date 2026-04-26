@@ -3,6 +3,7 @@ import 'package:expert_events/home/models/notification_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/cash_helper.dart';
+import '../../../core/guest_mode.dart';
 import '../../../event/models/events_model.dart';
 import '../../data/home_repository.dart';
 import 'home_states.dart';
@@ -25,6 +26,11 @@ class HomeCubit extends Cubit<HomeStates>{
 
   EventsModel? eventsModel;
   getEvents() async {
+    if (GuestMode.isGuest) {
+      eventsModel = GuestMode.buildMockEvents();
+      emit(EventsLoadedState());
+      return;
+    }
     emit(EventsLoadingState());
     try{
       Map<String,dynamic> response = await HomeRepository.getEvents();
@@ -43,6 +49,11 @@ class HomeCubit extends Cubit<HomeStates>{
   EventsModel? invitationsModel;
 
   getInvitations() async {
+    if (GuestMode.isGuest) {
+      invitationsModel = GuestMode.buildMockInvitations();
+      emit(InvitationsLoadedState());
+      return;
+    }
     emit(InvitationsLoadingState());
     try{
       Map<String,dynamic> response = await HomeRepository.getInvitations();
@@ -61,6 +72,12 @@ class HomeCubit extends Cubit<HomeStates>{
   NotificationModel? notificationModel;
 
   notification() async {
+    if (GuestMode.isGuest) {
+      // Guest UI replaces the body with a sign-in CTA, so we don't need a
+      // model here. Emit empty so the original loading spinner doesn't run.
+      emit(NotificationEmptyState());
+      return;
+    }
     emit(NotificationLoadingState());
     try{
       Map<String,dynamic> response = await HomeRepository.notification();
@@ -80,6 +97,12 @@ class HomeCubit extends Cubit<HomeStates>{
   String textAd = "";
   String photoAd = "";
   showHideAds() async {
+    if (GuestMode.isGuest) {
+      showAd = false;
+      textAd = "";
+      photoAd = "";
+      return;
+    }
     try{
       Map<String,dynamic> response = await HomeRepository.showHideAds();
       String adId = await CashHelper.getSavedString('ad_id', "");

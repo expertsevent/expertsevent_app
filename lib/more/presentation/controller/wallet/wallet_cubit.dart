@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expert_events/core/app_util.dart';
+import 'package:expert_events/core/guest_mode.dart';
 import 'package:expert_events/more/presentation/controller/wallet/wallet_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,6 +95,13 @@ class WalletCubit extends Cubit<WalletStates>{
   WalletModel? walletModel;
 
   getWallet() async {
+    if (GuestMode.isGuest) {
+      // The wallet screen is fully replaced by a sign-in CTA for guests; we
+      // just need to leave the cubit in a non-loading state so other places
+      // that read it (if any) don't show a spinner forever.
+      emit(TransactionsWalletEmptyState());
+      return;
+    }
     emit(WalletLoadingState());
     try{
       Map<String,dynamic> response = await WalletRepository.getWallet();

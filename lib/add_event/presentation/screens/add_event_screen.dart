@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expert_events/add_event/presentation/screens/taps/design.dart';
 import 'package:expert_events/core/app_util.dart';
+import 'package:expert_events/core/guest_mode.dart';
 import 'package:expert_events/event/models/events_model.dart';
 import 'package:expert_events/layout/presentation/screens/layout_screen.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +31,23 @@ class _AddEventsScreenState extends State<AddEventsScreen> {
   void initState() {
     super.initState();
     cubit.pageIndex = 0;
+    if (GuestMode.isGuest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        AppUtil.removeUntilNavigator(context, const LayoutScreen());
+        GuestMode.requireLogin(
+          context,
+          message: 'createEventLoginRequired'.tr(),
+        );
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (GuestMode.isGuest) {
+      return const Scaffold(backgroundColor: AppUI.whiteColor);
+    }
     return PopScope(
       onPopInvoked: (bool value) async {
         AppUtil.removeUntilNavigator(context, const LayoutScreen());

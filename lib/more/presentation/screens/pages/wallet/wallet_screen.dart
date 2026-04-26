@@ -6,6 +6,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../core/app_util.dart';
+import '../../../../../core/guest_mode.dart';
 import '../../../../../core/ui/app_ui.dart';
 import '../../../../../core/ui/components.dart';
 import '../../../controller/wallet/wallet_cubit.dart';
@@ -29,6 +30,13 @@ class _WalletScreenState extends State<WalletScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    if (GuestMode.isGuest) {
+      return GuestMode.buildLockedPage(
+        context,
+        appBarTitle: 'Wallet'.tr(),
+        message: 'walletLoginRequired'.tr(),
+      );
+    }
     return Scaffold(
       body: Stack(
         children: [

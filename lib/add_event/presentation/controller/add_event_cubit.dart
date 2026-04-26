@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/app_util.dart';
+import '../../../core/guest_mode.dart';
 import '../../../home/presentation/controller/home_cubit.dart';
 import '../../../layout/presentation/screens/layout_screen.dart';
 import '../../data/add_event_repository.dart';
@@ -112,6 +113,13 @@ class AddEventCubit extends Cubit<AddEventState> {
   Types? selectedType;
 
   eventTypes() async {
+    if (GuestMode.isGuest) {
+      // Event-creation flows are gated behind a sign-in dialog for guests,
+      // so we don't need real categories. Emit empty to avoid a hanging
+      // loading state.
+      emit(EventTypesEmptyState());
+      return;
+    }
     emit(EventTypesLoadingState());
     try {
       Map<String, dynamic> response = await AddEventRepository.eventTypes();
@@ -133,6 +141,12 @@ class AddEventCubit extends Cubit<AddEventState> {
   String? selectedSubTypePackage;
 
   eventSubTypes(context, int? id) async {
+    if (GuestMode.isGuest) {
+      // The home-screen template carousel is the only consumer that runs
+      // automatically; it falls back to its empty placeholder cleanly.
+      emit(EventSubTypesEmptyState());
+      return;
+    }
     emit(EventSubTypesLoadingState());
     try {
       Map<String, dynamic> response =
@@ -506,6 +520,15 @@ class AddEventCubit extends Cubit<AddEventState> {
   bool iosD = true;
   int wallet = 0;
   showHidePayment() async {
+    if (GuestMode.isGuest) {
+      // Hide wallet/packages quick-cards in MoreScreen for guests; they will
+      // hit a sign-in dialog if they tap them anyway, but hiding the cards
+      // avoids advertising a broken state.
+      show = false;
+      iosD = false;
+      wallet = 0;
+      return;
+    }
     try {
       Map<String, dynamic> response =
       await AddEventRepository.showHidePayment();

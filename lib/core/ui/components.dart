@@ -17,6 +17,7 @@ import '../../event/presentation/screens/details/event_details_screen.dart';
 import '../../invitations/presentation/screens/invitation_details_screen.dart';
 import '../../invitations/presentation/screens/qr_code_screen.dart';
 import '../app_util.dart';
+import '../guest_mode.dart';
 import 'app_ui.dart';
 
 class GradientCircularProgressIndicator extends StatelessWidget {
@@ -505,6 +506,10 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        if (GuestMode.guard(context,
+            message: 'profileLoginRequired'.tr())) {
+          return;
+        }
         AppUtil.mainNavigator(
             context, EventDetailsScreen(event: event, type: type)
         );
@@ -668,6 +673,10 @@ class InvitationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        if (GuestMode.guard(context,
+            message: 'profileLoginRequired'.tr())) {
+          return;
+        }
         if(isActive!){
           AppUtil.mainNavigator(
               context,  InvitationDetailsScreen(event: event)

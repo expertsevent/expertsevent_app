@@ -5,6 +5,7 @@ import 'package:expert_events/more/presentation/screens/pages/packages/payment.d
 import 'package:flutter/material.dart';
 
 import '../../../../../core/app_util.dart';
+import '../../../../../core/guest_mode.dart';
 import '../../../../../core/ui/app_ui.dart';
 import '../../../../../core/ui/components.dart';
 class CardPackage extends StatelessWidget {
@@ -80,6 +81,10 @@ class CardPackage extends StatelessWidget {
             borderColor:  AppUI.buttonColor ,
             textColor:  AppUI.whiteColor,
             onPressed: () {
+              if (GuestMode.guard(context,
+                  message: 'createEventLoginRequired'.tr())) {
+                return;
+              }
               AppUtil.mainNavigator(context,
                   PaymentPackage(
                       packageId: id,

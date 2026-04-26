@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/app_util.dart';
 import '../../../../core/cash_helper.dart';
+import '../../../../core/guest_mode.dart';
 import '../../../../layout/presentation/screens/layout_screen.dart';
 import '../../../../more/data/more_repository.dart';
 import '../../../data/auth_repository.dart';
@@ -157,6 +158,7 @@ class AuthCubit extends Cubit<AuthState> {
             CashHelper.setSavedString("phone", userModel!.data!.phone!);
             CashHelper.setSavedString("name", userModel!.data!.name!);
             CashHelper.setSavedString("isVerified", 1.toString());
+            await GuestMode.exit();
             AppUtil.removeUntilNavigator(context,const MyApp());
             AppUtil.successToast(context, userModel!.msg!);
           }else {
@@ -268,6 +270,7 @@ class AuthCubit extends Cubit<AuthState> {
         CashHelper.setSavedString("phone", userModel!.data!.phone!);
         CashHelper.setSavedString("name", userModel!.data!.name!);
         CashHelper.setSavedString("isVerified", userModel!.data!.isVerified!.toString());
+        await GuestMode.exit();
         if(userModel!.data!.phone == "0" || userModel!.data!.phone == null)
         {
           CashHelper.setSavedString("email", userModel!.data!.email!);
@@ -290,6 +293,13 @@ class AuthCubit extends Cubit<AuthState> {
 
   UserModel? profileModel;
   profile() async {
+    // Guest users have no API session – serve a synthetic profile so the
+    // UI (header avatar, name, package row, etc.) renders without errors.
+    if (GuestMode.isGuest) {
+      profileModel = GuestMode.buildMockProfile();
+      emit(ProfileLoadedState());
+      return;
+    }
     emit(ProfileLoadingState());
     try{
       Map<String,dynamic> response = await MoreRepository.profile();
@@ -412,6 +422,7 @@ verifyPhone(context, String type ) async {
         CashHelper.setSavedString("jwt", response["user"]!["api_token"]!);
         CashHelper.setSavedString("type", response["user"]!["type"]!);
         CashHelper.setSavedString("isVerified", response["user"]!["isVerified"]!.toString());
+        await GuestMode.exit();
         AppUtil.removeUntilNavigator(context, const MyApp());
         AppUtil.successToast(context, response['msg']);
       }else{

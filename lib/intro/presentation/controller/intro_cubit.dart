@@ -10,6 +10,7 @@ import '../../../auth/presentation/screens/mobile_sigin_with_email.dart';
 import '../../../auth/presentation/screens/verification_screen.dart';
 import '../../../core/app_util.dart';
 import '../../../core/cash_helper.dart';
+import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 import '../../../home/data/home_repository.dart';
@@ -55,6 +56,12 @@ class IntroCubit extends Cubit<IntroStates>{
           sendToken();
           AppUtil.removeUntilNavigator(context, const LayoutScreen());
         }
+      } else if (GuestMode.isGuest) {
+        // Returning guest: skip onboarding and drop them straight back into
+        // the layout. The various cubits will short-circuit their network
+        // calls thanks to the same flag.
+        sendToken();
+        AppUtil.removeUntilNavigator(context, const LayoutScreen());
       } else {
         sendToken();
         AppUtil.removeUntilNavigator(context, const OnBoardingScreen1());

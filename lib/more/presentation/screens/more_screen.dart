@@ -14,7 +14,9 @@ import 'package:lottie/lottie.dart';
 import '../../../add_event/presentation/screens/add_event_screen.dart';
 import '../../../auth/presentation/controller/auth/auth_states.dart';
 import '../../../auth/presentation/screens/mobile_sigin_with_email.dart';
+import '../../../auth/presentation/screens/sign_in_screen.dart';
 import '../../../core/app_util.dart';
+import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 import '../../../event/presentation/screens/guards/guards_screen.dart';
@@ -70,6 +72,10 @@ class MoreScreenState extends State<MoreScreen> {
                   }
               return InkWell(
                 onTap: (){
+                  if (GuestMode.guard(context,
+                      message: 'profileLoginRequired'.tr())) {
+                    return;
+                  }
                   AppUtil.mainNavigator(context, const EditProfile());
 
                 },
@@ -104,6 +110,10 @@ class MoreScreenState extends State<MoreScreen> {
                             const SizedBox(width: 4),
                             GestureDetector(
                               onTap: () {
+                                if (GuestMode.guard(context,
+                                    message: 'profileLoginRequired'.tr())) {
+                                  return;
+                                }
                                 if(authcubit.profileModel!.data!.package_id!.toString() != "0" ) {
                                   AppUtil.dialog2(
                                       context, '(change Plan)'.tr(), [
@@ -203,6 +213,10 @@ class MoreScreenState extends State<MoreScreen> {
               Expanded(
                 child: InkWell(
                   onTap: () {
+                    if (GuestMode.guard(context,
+                        message: 'walletLoginRequired'.tr())) {
+                      return;
+                    }
                     AppUtil.mainNavigator(context, const WalletScreen());
                   },
                   child: Container(
@@ -235,7 +249,7 @@ class MoreScreenState extends State<MoreScreen> {
                   ),
                 ),
               ),
-              if (AddEventCubit.get(context).show)
+              if (AddEventCubit.get(context).show || GuestMode.isGuest)
               Expanded(
                 child: InkWell(
                   onTap: () {
@@ -329,6 +343,10 @@ class MoreScreenState extends State<MoreScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
+                        if (GuestMode.guard(context,
+                            message: 'profileLoginRequired'.tr())) {
+                          return;
+                        }
                         AppUtil.mainNavigator(context, const ProfileScreen());
                       },
                       child: ListTile(
@@ -459,10 +477,10 @@ class MoreScreenState extends State<MoreScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  if (!GuestMode.isGuest) const SizedBox(
                     height: 10,
                   ),
-                  Container(
+                  if (!GuestMode.isGuest) Container(
                     height: 60,
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -491,10 +509,10 @@ class MoreScreenState extends State<MoreScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                  if (!GuestMode.isGuest) const SizedBox(
                     height: 10,
                   ),
-                  Container(
+                  if (!GuestMode.isGuest) Container(
                     height: 60,
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -537,6 +555,13 @@ class MoreScreenState extends State<MoreScreen> {
                     ),
                     child: InkWell(
                       onTap: () {
+                        if (GuestMode.isGuest) {
+                          // Guests don't have a session to log out of – send
+                          // them to sign-in directly. The flag is cleared on
+                          // a successful login (see AuthCubit).
+                          AppUtil.mainNavigator(context, const SignInScreen());
+                          return;
+                        }
                         AppUtil.dialog2(
                             context, 'logout'.tr(), [
                           Column(
@@ -579,7 +604,9 @@ class MoreScreenState extends State<MoreScreen> {
                           width: 20,
                         ),
                         title: CustomText(
-                          text: "logout".tr(),
+                          text: GuestMode.isGuest
+                              ? "signIn".tr()
+                              : "logout".tr(),
                           color: AppUI.blackColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,

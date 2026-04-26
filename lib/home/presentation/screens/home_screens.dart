@@ -8,6 +8,7 @@ import '../../../add_event/presentation/controller/add_event_cubit.dart';
 import '../../../add_event/presentation/controller/add_event_states.dart';
 import '../../../add_event/presentation/screens/add_event_screen.dart';
 import '../../../core/app_util.dart';
+import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 import '../../../layout/presentation/controller/bottom_nav_cubit.dart';
@@ -125,6 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         InkWell(
                           onTap: (){
+                            if (GuestMode.guard(context,
+                                message: 'profileLoginRequired'.tr())) {
+                              return;
+                            }
                             AppUtil.mainNavigator(context, const EditProfile());
                           },
                           child: CachedNetworkImage(
@@ -156,6 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(width: 4),
                                 GestureDetector(
                                   onTap: () {
+                                    if (GuestMode.guard(context,
+                                        message: 'profileLoginRequired'.tr())) {
+                                      return;
+                                    }
                                     if(authcubit.profileModel!.data!.package_id!.toString() != "0" ) {
                                       AppUtil.dialog2(
                                           context, '(change Plan)'.tr(), [
@@ -273,6 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10,),
                       CustomButton(text: "Create your event now".tr(),color: AppUI.buttonColor,textColor: AppUI.whiteColor,width: 190,
                         onPressed: (){
+                          if (GuestMode.guard(context,
+                              message: 'createEventLoginRequired'.tr())) {
+                            return;
+                          }
                           AppUtil.mainNavigator(context, const AddEventsScreen());
                         },),
                     ],
@@ -287,6 +300,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(left: 16,right: 16),
             child: CustomButton(text: "Create your event now".tr(),color: AppUI.secondColor,textColor: AppUI.whiteColor,width: double.infinity,
               onPressed: (){
+                if (GuestMode.guard(context,
+                    message: 'createEventLoginRequired'.tr())) {
+                  return;
+                }
                 AppUtil.mainNavigator(context, const AddEventsScreen());
               },),
           ),
@@ -476,6 +493,45 @@ class _HomeScreenState extends State<HomeScreen> {
               child: BlocBuilder<AddEventCubit,AddEventState>(
                   buildWhen: (_,state) => state is EventSubTypesLoadingState || state is EventSubTypesLoadedState || state is EventSubTypesEmptyState || state is EventSubTypesErrorState,
                   builder: (context, state) {
+                    if (GuestMode.isGuest) {
+                      const guestTemplateAssets = [
+                        'banner_1.jpg',
+                        'banner_2.jpg',
+                        'banner_3.jpg',
+                        'event.png',
+                      ];
+                      return ListView(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        children: List.generate(guestTemplateAssets.length, (index) {
+                          return Row(
+                            children: [
+                              SizedBox(
+                                width: AppUtil.responsiveWidth(context) * 0.60,
+                                child: InkWell(
+                                  onTap: () {
+                                    GuestMode.requireLogin(
+                                      context,
+                                      message: 'createEventLoginRequired'.tr(),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.asset(
+                                      "${AppUI.imgPath}${guestTemplateAssets[index]}",
+                                      width: double.infinity,
+                                      height: 350,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                            ],
+                          );
+                        }),
+                      );
+                    }
                     if(state is EventSubTypesLoadingState){
                       return const LoadingWidget();
                     }
@@ -497,6 +553,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         InkWell(
                                           onTap:(){
+                                            if (GuestMode.guard(context,
+                                                message: 'createEventLoginRequired'.tr())) {
+                                              return;
+                                            }
                                             AppUtil.mainNavigator(context, const AddEventsScreen());
                                           },
                                           child: CachedNetworkImage(

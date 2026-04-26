@@ -5,6 +5,7 @@ import 'package:expert_events/home/presentation/controller/home_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 class NotificationScreen extends StatefulWidget {
@@ -24,6 +25,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    if (GuestMode.isGuest) {
+      return GuestMode.buildLockedPage(
+        context,
+        appBarTitle: 'notification'.tr(),
+        message: 'notificationsLoginRequired'.tr(),
+      );
+    }
     return Scaffold(
       body: Stack(
         children: [
