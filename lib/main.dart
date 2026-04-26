@@ -32,7 +32,6 @@ import 'package:timezone/data/latest.dart' as tzdata;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -40,12 +39,25 @@ Future<void> main() async {
       statusBarBrightness: Brightness.light,
     ),
   );
-  await EasyLocalization.ensureInitialized();
-  tzdata.initializeTimeZones();
 
-  await AppUtil().initNotification();
-  // initialize connectivity watcher
+  // Things we *must* await before runApp:
+  //   - Firebase: many plugins assume the default app is initialized.
+  //   - EasyLocalization: needed so MaterialApp can resolve locales.
+  // Run them in parallel to cut cold-start time roughly in half.
+  await Future.wait<void>([
+    Firebase.initializeApp(),
+    EasyLocalization.ensureInitialized(),
+  ]);
+
+  // Cheap, synchronous setup.
+  tzdata.initializeTimeZones();
   NetworkInfo.initialize();
+
+  // Notification setup talks to Firebase Messaging + flutter_local_notifications
+  // and previously blocked the first frame. It does not need to complete
+  // before the splash is visible, so kick it off in the background.
+  unawaited(AppUtil().initNotification());
+
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ar')],
@@ -90,15 +102,34 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late AppsflyerSdk _appsflyerSdk;
   late FacebookAppEvents facebookAppEvents;
+  bool _languageStored = false;
 
   @override
   void initState() {
     super.initState();
-    _initAppsFlyer();
-    _initFacebookAppEvents();
+    // Defer all third-party analytics SDK initialization until after the
+    // first frame is on screen. None of these are required for the splash
+    // to render, and several of them perform synchronous platform-channel
+    // work that delays first paint when started from initState.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_initAppsFlyer());
+      unawaited(_initFacebookAppEvents());
+      _ensureDeviceLanguageStored();
+    });
   }
 
-  void _initAppsFlyer() async {
+  Future<void> _ensureDeviceLanguageStored() async {
+    if (_languageStored) return;
+    _languageStored = true;
+    try {
+      await storeDeviceLanguageIfNotChosen(context);
+    } catch (e) {
+      debugPrint('storeDeviceLanguageIfNotChosen error: $e');
+    }
+  }
+
+  Future<void> _initAppsFlyer() async {
     // Configure AppsFlyer
     final AppsFlyerOptions options = AppsFlyerOptions(
         afDevKey: "HD7GQojLRGobHMFApdaSGZ",
@@ -153,31 +184,43 @@ class _MyAppState extends State<MyApp> {
     print("AppsFlyer: SDK initialized");
   }
 
-  void _initFacebookAppEvents() async {
+  Future<void> _initFacebookAppEvents() async {
     // Initialize Facebook App Events
     facebookAppEvents = FacebookAppEvents();
-    
-    // Get dynamic device and app information
+
     final deviceInfo = DeviceInfoPlugin();
-    final packageInfo = await PackageInfo.fromPlatform();
     final connectivity = Connectivity();
-    final connectivityResult = await connectivity.checkConnectivity();
-    
-    // Get device-specific data
+
+    // Fetch package info, connectivity result, and device info concurrently.
+    // Previously these awaited each other sequentially which added ~3
+    // round-trips of platform-channel latency to startup.
+    final results = await Future.wait<dynamic>([
+      PackageInfo.fromPlatform(),
+      connectivity.checkConnectivity(),
+      if (Platform.isAndroid)
+        deviceInfo.androidInfo
+      else if (Platform.isIOS)
+        deviceInfo.iosInfo
+      else
+        Future<dynamic>.value(null),
+    ]);
+
+    final packageInfo = results[0] as PackageInfo;
+    final connectivityResult = results[1];
+    final platformInfo = results[2];
+
     String deviceModel = 'unknown';
     String osVersion = 'unknown';
     String deviceId = 'unknown';
-    
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      deviceModel = androidInfo.model ?? 'unknown';
-      osVersion = androidInfo.version.release ?? 'unknown';
-      deviceId = androidInfo.id ?? 'unknown';
-    } else if (Platform.isIOS) {
-      final iosInfo = await deviceInfo.iosInfo;
-      deviceModel = iosInfo.model ?? 'unknown';
-      osVersion = iosInfo.systemVersion ?? 'unknown';
-      deviceId = iosInfo.identifierForVendor ?? 'unknown';
+
+    if (Platform.isAndroid && platformInfo is AndroidDeviceInfo) {
+      deviceModel = platformInfo.model ?? 'unknown';
+      osVersion = platformInfo.version.release ?? 'unknown';
+      deviceId = platformInfo.id ?? 'unknown';
+    } else if (Platform.isIOS && platformInfo is IosDeviceInfo) {
+      deviceModel = platformInfo.model ?? 'unknown';
+      osVersion = platformInfo.systemVersion ?? 'unknown';
+      deviceId = platformInfo.identifierForVendor ?? 'unknown';
     }
     
     // Log app activation event with dynamic parameters
@@ -209,7 +252,6 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    storeDeviceLanguageIfNotChosen(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => IntroCubit()),

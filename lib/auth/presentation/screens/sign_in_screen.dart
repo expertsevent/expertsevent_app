@@ -4,6 +4,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
@@ -50,6 +51,10 @@ class _SignInScreenState extends State<SignInScreen> {
       displayNameNoCountryCode: 'World Wide',
       e164Key: '',
     );
+    // Pre-check the Terms & Conditions checkbox so the user can sign in
+    // without an extra tap. They can still uncheck it manually before
+    // submitting if they choose not to agree.
+    AuthCubit.get(context).privacyCheck = true;
     afStart();
   }
 
@@ -166,7 +171,17 @@ class _SignInScreenState extends State<SignInScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 20,),
-                          CustomInput(controller: cubit.loginPhone,suffixIcon: SvgPicture.asset("${AppUI.iconPath}mobile.svg"),hint: "phoneNumber".tr(), textInputType: TextInputType.phone,prefixIcon: SizedBox(
+                          CustomInput(controller: cubit.loginPhone,suffixIcon: SvgPicture.asset("${AppUI.iconPath}mobile.svg"),hint: "phoneNumber".tr(), textInputType: TextInputType.phone,
+                            // Limit to 9 digits — the length of a Saudi
+                            // mobile number after the +966 country code.
+                            // digitsOnly also blocks letters/symbols that
+                            // some Android keyboards still allow even
+                            // when keyboardType is TextInputType.phone.
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(9),
+                            ],
+                            prefixIcon: SizedBox(
                             width: 50,
                             child: InkWell(
                               onTap: (){
