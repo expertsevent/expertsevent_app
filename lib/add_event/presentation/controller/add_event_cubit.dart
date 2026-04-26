@@ -66,6 +66,7 @@ class AddEventCubit extends Cubit<AddEventState> {
   }
 
   var eventName = TextEditingController();
+  var inviterName = TextEditingController();
   var dob = TextEditingController();
   var time = TextEditingController();
   var eventType = TextEditingController();
@@ -170,6 +171,7 @@ class AddEventCubit extends Cubit<AddEventState> {
 
   resetEventData() {
     eventName.clear();
+    inviterName.clear();
     dob.clear();
     time.clear();
     eventType.clear();
@@ -348,6 +350,7 @@ class AddEventCubit extends Cubit<AddEventState> {
     }
     Map<String, String> formData = {
       "name": eventName.text,
+      "inviter_name": inviterName.text,
       "date_from": dob.text,
       "time": time.text,
       "type": selectedType!.id.toString(),

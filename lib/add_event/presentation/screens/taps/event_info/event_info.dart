@@ -72,6 +72,14 @@ class _EventInfoState extends State<EventInfo> {
               const SizedBox(
                 height: 15,
               ),
+              CustomInput(
+                  controller: cubit.inviterName,
+                  hint: "inviterName".tr(),
+                  textInputType: TextInputType.text,
+                  fillColor: AppUI.whiteColor),
+              const SizedBox(
+                height: 15,
+              ),
 
               Row(
                 children: [
