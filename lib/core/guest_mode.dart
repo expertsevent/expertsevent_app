@@ -13,14 +13,13 @@ import 'ui/components.dart';
 /// Centralised state and helpers for the "browse as guest" experience.
 ///
 /// Guest mode lets a user explore the app with mock data without owning an
-/// account. The flag lives in two places:
-///   * [isGuest] – an in-memory cache used by every `build` and cubit method
-///     (these run synchronously and cannot await SharedPreferences each call).
-///   * SharedPreferences key [_kIsGuest] – the persistent source of truth so
-///     that the flag survives app restarts.
+/// account. [isGuest] is in-memory only for the running process — it does not
+/// survive a cold start, so reopening the app shows onboarding again (user can
+/// choose guest or sign in). Older builds stored a persisted flag; [load]
+/// clears that migration key once at startup.
 ///
-/// Always mutate the flag through [enter] / [exit] so both copies stay in
-/// sync, and call [load] once during app startup before the first cubit fires.
+/// Always mutate the flag through [enter] / [exit], and call [load] once during
+/// app startup before the first cubit fires.
 class GuestMode {
   GuestMode._();
 
@@ -31,24 +30,24 @@ class GuestMode {
   /// before the splash finishes.
   static bool isGuest = false;
 
-  /// Hydrates [isGuest] from SharedPreferences. Safe to call multiple times.
+  /// Clears any legacy persisted guest flag and resets [isGuest]. Safe to
+  /// call multiple times.
   static Future<void> load() async {
-    final v = await CashHelper.getSavedString(_kIsGuest, "");
-    isGuest = v == "1";
+    await CashHelper.removeSavedString(_kIsGuest);
+    isGuest = false;
   }
 
-  /// Marks the user as a guest. The caller is expected to navigate to the
-  /// authenticated layout afterwards (see [enterFromOnboarding]).
+  /// Marks the user as a guest until the process ends or [exit] is called.
+  /// The caller is expected to navigate to the layout afterwards.
   static Future<void> enter() async {
     isGuest = true;
-    await CashHelper.setSavedString(_kIsGuest, "1");
   }
 
   /// Clears the guest flag. Called whenever a real session is established
   /// (login / register / verify) so subsequent cubit calls hit the real API.
   static Future<void> exit() async {
     isGuest = false;
-    await CashHelper.setSavedString(_kIsGuest, "0");
+    await CashHelper.removeSavedString(_kIsGuest);
   }
 
   // ---------------------------------------------------------------------------

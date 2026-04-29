@@ -54,9 +54,8 @@ Future<void> main() async {
   tzdata.initializeTimeZones();
   NetworkInfo.initialize();
 
-  // Hydrate the guest-mode flag from SharedPreferences before any cubits
-  // fire (several start in MyApp.build). They check `GuestMode.isGuest`
-  // synchronously to skip authenticated network calls.
+  // Hydrate guest mode: clears legacy persisted guest flags and resets
+  // in-memory state before any cubits read GuestMode.isGuest.
   await GuestMode.load();
 
   // Notification setup talks to Firebase Messaging + flutter_local_notifications

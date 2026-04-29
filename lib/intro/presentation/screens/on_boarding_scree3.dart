@@ -168,7 +168,7 @@ class _OnBoardingScreen3State extends State<OnBoardingScreen3> {
                           CustomButton(
                             text: "next".tr(),
                             onPressed: () {
-                              AppUtil.removeUntilNavigator(
+                              AppUtil.mainNavigator(
                                   context, const OnBoardingScreen4());
                             },
                           )

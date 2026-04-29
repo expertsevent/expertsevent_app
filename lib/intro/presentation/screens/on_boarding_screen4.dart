@@ -1,13 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../auth/presentation/screens/register_screen.dart';
 import '../../../auth/presentation/screens/sign_in_screen.dart';
 import '../../../core/app_util.dart';
+import '../../../core/cash_helper.dart';
 import '../../../core/guest_mode.dart';
 import '../../../core/ui/app_ui.dart';
 import '../../../core/ui/components.dart';
 import '../../../layout/presentation/screens/layout_screen.dart';
+import '../../../main.dart';
 import 'guest/guest_en.dart';
 
 class OnBoardingScreen4 extends StatefulWidget {
@@ -28,6 +29,21 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
             height: double.infinity,
             width: double.infinity,
             fit: BoxFit.fill,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 20.0, vertical: MediaQuery.of(context).padding.top),
+            child: CircleAvatar(
+              backgroundColor: AppUI.whiteColor,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: AppUI.greyColor,
+                  )),
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -133,6 +149,56 @@ class _OnBoardingScreen4State extends State<OnBoardingScreen4> {
             height: AppUtil.responsiveHeight(context) * 0.75,
             width: double.infinity,
             fit: BoxFit.fill,
+          ),
+          PositionedDirectional(
+            top: MediaQuery.of(context).padding.top,
+            end: 10,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  AppUtil.dialog2(context, 'lang'.tr(), [
+                    InkWell(
+                      onTap: () {
+                        context.setLocale(const Locale('en'));
+                        CashHelper.setSavedString("lang", "en");
+                        Navigator.of(context, rootNavigator: true).pop();
+                        AppUtil.removeUntilNavigator(
+                            context, const MyApp());
+                      },
+                      child: const CustomText(text: "English"),
+                    ),
+                    const Divider(),
+                    InkWell(
+                      onTap: () {
+                        context.setLocale(const Locale('ar'));
+                        CashHelper.setSavedString("lang", "ar");
+                        Navigator.of(context, rootNavigator: true).pop();
+                        AppUtil.removeUntilNavigator(
+                            context, const MyApp());
+                      },
+                      child: const CustomText(text: "العربية"),
+                    ),
+                  ]);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.language,
+                      size: 35,
+                      color: AppUI.mainColor,
+                    ),
+                    const SizedBox(width: 5),
+                    CustomText(
+                      text: "lang".tr(),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
