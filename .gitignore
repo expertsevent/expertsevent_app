@@ -5,7 +5,10 @@
 .packages
 .pub-cache/
 .pub/
+
+# Compiled / generated output (Flutter, native toolchains)
 build/
+**/build/
 ios/Flutter/.symlinks/
 ios/Pods/
 ios/Runner.xcworkspace/
