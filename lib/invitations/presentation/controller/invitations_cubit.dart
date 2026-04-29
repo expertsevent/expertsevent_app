@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_calendar/device_calendar.dart' as device_calendar;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:expert_events/core/app_util.dart';
 import 'package:expert_events/home/presentation/controller/home_cubit.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,7 @@ import '../../data/invitations_repository.dart';
 import 'invitations_states.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../../../core/calendar_util.dart';
+import '../../../../core/guest_mode.dart';
 
 class InvitationsCubit extends Cubit<InvitationsStates>{
   InvitationsCubit(): super(InvitationsInitState());
@@ -46,6 +48,11 @@ class InvitationsCubit extends Cubit<InvitationsStates>{
   EventsModel? invitationsModel;
 
   getInvitations(endPoint,{String? filter}) async {
+    if (GuestMode.isGuest) {
+      invitationsModel = GuestMode.buildMockInvitationsForTab(endPoint);
+      emit(InvitationsLoadedState());
+      return;
+    }
     emit(InvitationsLoadingState());
     try{
       Map<String,dynamic> response = await InvitationsRepository.getInvitations(endPoint,filter: filter??"");
@@ -62,6 +69,10 @@ class InvitationsCubit extends Cubit<InvitationsStates>{
   }
 
   respond(context,id,type,{String? eventName,String? eventDate,String? eventTime,String? eventLocation,String? eventContent}) async {
+    if (GuestMode.isGuest) {
+      GuestMode.requireLogin(context, message: 'profileLoginRequired'.tr());
+      return;
+    }
     if(type == "accept") {
       emit(AcceptLoadingState());
     }else{

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../add_event/models/event_type.dart';
+import '../../../../core/guest_mode.dart';
 import '../../../data/events_repository.dart';
 import '../../../models/events_model.dart';
 import '../../../models/greeting_model.dart';
@@ -92,6 +93,11 @@ class EventsCubit extends Cubit<EventsStates>{
   EventsModel? draftEventsModel;
 
   getDraftEvents({String? filter}) async {
+    if (GuestMode.isGuest) {
+      draftEventsModel = GuestMode.buildMockDraftEvents();
+      emit(DraftEventsLoadedState());
+      return;
+    }
     emit(DraftEventsLoadingState());
     try{
       Map<String,dynamic> response = await EventsRepository.getEvents("draft-events",filter: filter??"");
@@ -111,6 +117,11 @@ class EventsCubit extends Cubit<EventsStates>{
 
   EventsModel? waitEventsModel;
   getWaitEvents({String? filter}) async {
+    if (GuestMode.isGuest) {
+      waitEventsModel = GuestMode.buildMockWaitEvents();
+      emit(WaitEventsLoadedState());
+      return;
+    }
     emit(WaitEventsLoadingState());
     // try{
       Map<String,dynamic> response = await EventsRepository.getEvents("wait-events",filter: filter??"");
@@ -128,6 +139,11 @@ class EventsCubit extends Cubit<EventsStates>{
 
   EventsModel? finishEventsModel;
   getFinishEvents({String? filter}) async {
+    if (GuestMode.isGuest) {
+      finishEventsModel = GuestMode.buildMockFinishedEvents();
+      emit(FinishEventsLoadedState());
+      return;
+    }
     emit(FinishEventsLoadingState());
     try {
       Map<String, dynamic> response = await EventsRepository.getEvents("finish-events", filter: filter ?? "");
@@ -145,6 +161,11 @@ class EventsCubit extends Cubit<EventsStates>{
 
   EventsModel? cancelEventsModel;
   getCancelEvents({String? filter}) async {
+    if (GuestMode.isGuest) {
+      cancelEventsModel = GuestMode.buildMockCancelEvents();
+      emit(CancelEventsLoadedState());
+      return;
+    }
     emit(CancelEventsLoadingState());
     try{
       Map<String,dynamic> response = await EventsRepository.getEvents("cancel-events",filter: filter??"");
@@ -162,6 +183,11 @@ class EventsCubit extends Cubit<EventsStates>{
 
   EventsModel? activeEventsModel;
   getActiveEvents({String? filter}) async {
+    if (GuestMode.isGuest) {
+      activeEventsModel = GuestMode.buildMockActiveTabEvents();
+      emit(ActiveEventsLoadedState());
+      return;
+    }
     emit(ActiveEventsLoadingState());
     try{
       Map<String,dynamic> response = await EventsRepository.getEvents("active-events",filter: filter??"");

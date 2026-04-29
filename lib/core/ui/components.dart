@@ -677,7 +677,7 @@ class InvitationCard extends StatelessWidget {
             message: 'profileLoginRequired'.tr())) {
           return;
         }
-        if(isActive!){
+        if (isActive == true) {
           AppUtil.mainNavigator(
               context,  InvitationDetailsScreen(event: event)
           );
@@ -833,6 +833,11 @@ class InvitationCard extends StatelessWidget {
                                 textColor: AppUI.secondColor,
                                 color: AppUI.secondColor.withOpacity(0.16),
                                 onPressed: () {
+                                  if (GuestMode.guard(context,
+                                      message:
+                                          'profileLoginRequired'.tr())) {
+                                    return;
+                                  }
                                   InvitationsCubit.get(context)
                                       .respond(context, event.id, "accept",
                                       eventName: event.name,
@@ -862,6 +867,11 @@ class InvitationCard extends StatelessWidget {
                                 color: AppUI.whiteColor,
                                 borderColor: AppUI.errorColor,
                                 onPressed: () {
+                                  if (GuestMode.guard(context,
+                                      message:
+                                          'profileLoginRequired'.tr())) {
+                                    return;
+                                  }
                                   InvitationsCubit.get(context)
                                       .respond(context, event.id, "reject");
                                 },
@@ -875,6 +885,11 @@ class InvitationCard extends StatelessWidget {
                       children: [
                         IconButton(
                             onPressed: () {
+                              if (GuestMode.guard(context,
+                                  message:
+                                      'profileLoginRequired'.tr())) {
+                                return;
+                              }
                               AppUtil.mainNavigator(
                                   context,
                                   QrCodeScreen(
@@ -887,6 +902,11 @@ class InvitationCard extends StatelessWidget {
                         ),
                         IconButton(
                             onPressed: () async {
+                              if (GuestMode.guard(context,
+                                  message:
+                                      'profileLoginRequired'.tr())) {
+                                return;
+                              }
                               String googleUrl =
                                   'https://www.google.com/maps/search/?api=1&query=${event.lat},${event.lang}';
                               if (await canLaunch(googleUrl)) {

@@ -103,6 +103,7 @@ class GuestMode {
     required String timeFrom,
     required String typeName,
     required String eventStatus,
+    String draft = "0",
     int countvisitor = 50,
     int acceptvisitorCount = 30,
   }) {
@@ -119,7 +120,7 @@ class GuestMode {
       userId: "0",
       status: "1",
       eventStatus: eventStatus,
-      draft: "0",
+      draft: draft,
       privacy: "public",
       video: "",
       photo: "",
@@ -195,8 +196,7 @@ class GuestMode {
     );
   }
 
-  /// Mock invitations payload used by the home / invitations tab in guest
-  /// mode. A small list keeps the carousels short and focused.
+  /// Mock invitations payload used by the home carousel in guest mode.
   static event_model.EventsModel buildMockInvitations() {
     return event_model.EventsModel(
       status: true,
@@ -224,6 +224,259 @@ class GuestMode {
           eventStatus: "pending",
           countvisitor: 60,
           acceptvisitorCount: 25,
+        ),
+      ],
+    );
+  }
+
+  /// Invitations hub tabs: `'pending'` (upcoming), `'accept'`, `'reject'`, or `''`.
+  static event_model.EventsModel buildMockInvitationsForTab(String endpoint) {
+    switch (endpoint) {
+      case 'accept':
+        return event_model.EventsModel(
+          status: true,
+          errNum: "S000",
+          msg: "guest",
+          data: [
+            _mockEvent(
+              id: 2101,
+              name: "mockEventWedding".tr(),
+              location: "mockLocationRiyadh".tr(),
+              dateFrom: "2026-06-01",
+              timeFrom: "18:00",
+              typeName: "Wedding".tr(),
+              eventStatus: "active",
+              countvisitor: 100,
+              acceptvisitorCount: 90,
+            ),
+            _mockEvent(
+              id: 2102,
+              name: "mockEventCorporate".tr(),
+              location: "mockLocationDammam".tr(),
+              dateFrom: "2026-07-12",
+              timeFrom: "09:30",
+              typeName: "Meeting".tr(),
+              eventStatus: "active",
+              countvisitor: 40,
+              acceptvisitorCount: 38,
+            ),
+          ],
+        );
+      case 'reject':
+        return event_model.EventsModel(
+          status: true,
+          errNum: "S000",
+          msg: "guest",
+          data: [
+            _mockEvent(
+              id: 2201,
+              name: "mockEventBirthday".tr(),
+              location: "mockLocationJeddah".tr(),
+              dateFrom: "2026-04-01",
+              timeFrom: "16:00",
+              typeName: "Birthday".tr(),
+              eventStatus: "canceled",
+              countvisitor: 30,
+              acceptvisitorCount: 0,
+            ),
+            _mockEvent(
+              id: 2202,
+              name: "mockEventGraduation".tr(),
+              location: "mockLocationMecca".tr(),
+              dateFrom: "2026-03-20",
+              timeFrom: "14:00",
+              typeName: "Graduation".tr(),
+              eventStatus: "canceled",
+              countvisitor: 55,
+              acceptvisitorCount: 0,
+            ),
+          ],
+        );
+      case 'pending':
+      default:
+        return event_model.EventsModel(
+          status: true,
+          errNum: "S000",
+          msg: "guest",
+          data: [
+            _mockEvent(
+              id: 2003,
+              name: "mockEventCharityGala".tr(),
+              location: "mockLocationMecca".tr(),
+              dateFrom: "2026-05-30",
+              timeFrom: "19:00",
+              typeName: "Gala".tr(),
+              eventStatus: "pending",
+              countvisitor: 200,
+              acceptvisitorCount: 12,
+            ),
+            _mockEvent(
+              id: 2004,
+              name: "mockEventGraduation".tr(),
+              location: "mockLocationMedina".tr(),
+              dateFrom: "2026-09-15",
+              timeFrom: "17:30",
+              typeName: "Graduation".tr(),
+              eventStatus: "pending",
+              countvisitor: 60,
+              acceptvisitorCount: 8,
+            ),
+          ],
+        );
+    }
+  }
+
+  static event_model.EventsModel buildMockDraftEvents() {
+    return event_model.EventsModel(
+      status: true,
+      errNum: "S000",
+      msg: "guest",
+      data: [
+        _mockEvent(
+          id: 3001,
+          name: "mockEventWedding".tr(),
+          location: "mockLocationRiyadh".tr(),
+          dateFrom: "2026-10-01",
+          timeFrom: "20:00",
+          typeName: "Wedding".tr(),
+          eventStatus: "draft",
+          draft: "1",
+        ),
+        _mockEvent(
+          id: 3002,
+          name: "mockEventBirthday".tr(),
+          location: "mockLocationJeddah".tr(),
+          dateFrom: "2026-10-05",
+          timeFrom: "15:00",
+          typeName: "Birthday".tr(),
+          eventStatus: "draft",
+          draft: "1",
+          countvisitor: 20,
+          acceptvisitorCount: 0,
+        ),
+      ],
+    );
+  }
+
+  static event_model.EventsModel buildMockCancelEvents() {
+    return event_model.EventsModel(
+      status: true,
+      errNum: "S000",
+      msg: "guest",
+      data: [
+        _mockEvent(
+          id: 3011,
+          name: "mockEventCorporate".tr(),
+          location: "mockLocationDammam".tr(),
+          dateFrom: "2026-03-01",
+          timeFrom: "10:00",
+          typeName: "Meeting".tr(),
+          eventStatus: "canceled",
+          countvisitor: 0,
+          acceptvisitorCount: 0,
+        ),
+        _mockEvent(
+          id: 3012,
+          name: "mockEventCharityGala".tr(),
+          location: "mockLocationMecca".tr(),
+          dateFrom: "2026-02-15",
+          timeFrom: "19:30",
+          typeName: "Gala".tr(),
+          eventStatus: "canceled",
+          countvisitor: 0,
+          acceptvisitorCount: 0,
+        ),
+      ],
+    );
+  }
+
+  static event_model.EventsModel buildMockWaitEvents() {
+    return event_model.EventsModel(
+      status: true,
+      errNum: "S000",
+      msg: "guest",
+      data: [
+        _mockEvent(
+          id: 3021,
+          name: "mockEventGraduation".tr(),
+          location: "mockLocationMedina".tr(),
+          dateFrom: "2026-11-20",
+          timeFrom: "16:30",
+          typeName: "Graduation".tr(),
+          eventStatus: "pending",
+        ),
+        _mockEvent(
+          id: 3022,
+          name: "mockEventBirthday".tr(),
+          location: "mockLocationJeddah".tr(),
+          dateFrom: "2026-08-09",
+          timeFrom: "19:15",
+          typeName: "Birthday".tr(),
+          eventStatus: "pending",
+        ),
+      ],
+    );
+  }
+
+  static event_model.EventsModel buildMockActiveTabEvents() {
+    return event_model.EventsModel(
+      status: true,
+      errNum: "S000",
+      msg: "guest",
+      data: [
+        _mockEvent(
+          id: 3031,
+          name: "mockEventWedding".tr(),
+          location: "mockLocationRiyadh".tr(),
+          dateFrom: "2026-06-12",
+          timeFrom: "20:00",
+          typeName: "Wedding".tr(),
+          eventStatus: "active",
+          countvisitor: 120,
+          acceptvisitorCount: 84,
+        ),
+        _mockEvent(
+          id: 3032,
+          name: "mockEventCharityGala".tr(),
+          location: "mockLocationMecca".tr(),
+          dateFrom: "2026-07-03",
+          timeFrom: "18:45",
+          typeName: "Gala".tr(),
+          eventStatus: "active",
+          countvisitor: 90,
+          acceptvisitorCount: 70,
+        ),
+      ],
+    );
+  }
+
+  static event_model.EventsModel buildMockFinishedEvents() {
+    return event_model.EventsModel(
+      status: true,
+      errNum: "S000",
+      msg: "guest",
+      data: [
+        _mockEvent(
+          id: 3041,
+          name: "mockEventCorporate".tr(),
+          location: "mockLocationDammam".tr(),
+          dateFrom: "2025-12-01",
+          timeFrom: "10:00",
+          typeName: "Meeting".tr(),
+          eventStatus: "finished",
+          countvisitor: 80,
+          acceptvisitorCount: 75,
+        ),
+        _mockEvent(
+          id: 3042,
+          name: "mockEventBirthday".tr(),
+          location: "mockLocationJeddah".tr(),
+          dateFrom: "2025-11-11",
+          timeFrom: "17:00",
+          typeName: "Birthday".tr(),
+          eventStatus: "finished",
+          countvisitor: 40,
+          acceptvisitorCount: 38,
         ),
       ],
     );
