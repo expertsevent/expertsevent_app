@@ -1,5 +1,6 @@
 platform :ios, '15.6'
-source 'https://github.com/CocoaPods/Specs.git'
+# Use CocoaPods CDN (lighter than cloning the full Specs git repo).
+source 'https://cdn.cocoapods.org/'
 
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
