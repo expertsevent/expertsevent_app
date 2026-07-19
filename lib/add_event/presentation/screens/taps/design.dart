@@ -243,7 +243,14 @@ class _DesignState extends State<Design> {
                   if(!cubit.uploadImageCheck)
                     Screenshot(
                       controller: screenshotController,
-                      child: Stack(
+                      child: MediaQuery(
+                        // Template text is captured as an image; ignore the
+                        // device accessibility font scale so all users get
+                        // the same layout regardless of system text size.
+                        data: MediaQuery.of(context).copyWith(
+                          textScaler: TextScaler.noScaling,
+                        ),
+                        child: Stack(
                         alignment: Alignment.center,
                         children: [
                           BlocBuilder<AddEventCubit,AddEventState>(
@@ -312,6 +319,7 @@ class _DesignState extends State<Design> {
                               }
                           ),
                         ],
+                      ),
                       ),
                     ),
                   if(!cubit.uploadImageCheck)
