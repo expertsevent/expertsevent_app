@@ -15,3 +15,5 @@ class NotificationLoadingState extends HomeStates{}
 class NotificationLoadedState extends HomeStates{}
 class NotificationEmptyState extends HomeStates{}
 class NotificationErrorState extends HomeStates{}
+
+class PromotionAdReadyState extends HomeStates{}

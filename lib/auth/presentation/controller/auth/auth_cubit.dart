@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:expert_events/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/app_util.dart';
 import '../../../../core/cash_helper.dart';
 import '../../../../core/guest_mode.dart';
+import '../../../../intro/presentation/controller/intro_cubit.dart';
 import '../../../../layout/presentation/screens/layout_screen.dart';
 import '../../../../more/data/more_repository.dart';
 import '../../../data/auth_repository.dart';
@@ -159,7 +159,8 @@ class AuthCubit extends Cubit<AuthState> {
             CashHelper.setSavedString("name", userModel!.data!.name!);
             CashHelper.setSavedString("isVerified", 1.toString());
             await GuestMode.exit();
-            AppUtil.removeUntilNavigator(context,const MyApp());
+            IntroCubit.get(context).sendToken();
+            AppUtil.removeUntilNavigator(context, const LayoutScreen());
             AppUtil.successToast(context, userModel!.msg!);
           }else {
             verificationCode.clear();
@@ -277,7 +278,8 @@ class AuthCubit extends Cubit<AuthState> {
           AppUtil.mainNavigator(context, const MobileSignWithEmail());
           AppUtil.successToast(context, userModel!.msg!);
         }else{
-          AppUtil.removeUntilNavigator(context, const MyApp());
+          IntroCubit.get(context).sendToken();
+          AppUtil.removeUntilNavigator(context, const LayoutScreen());
           AppUtil.successToast(context, userModel!.msg!);
         }
       }else{
@@ -423,7 +425,8 @@ verifyPhone(context, String type ) async {
         CashHelper.setSavedString("type", response["user"]!["type"]!);
         CashHelper.setSavedString("isVerified", response["user"]!["isVerified"]!.toString());
         await GuestMode.exit();
-        AppUtil.removeUntilNavigator(context, const MyApp());
+        IntroCubit.get(context).sendToken();
+        AppUtil.removeUntilNavigator(context, const LayoutScreen());
         AppUtil.successToast(context, response['msg']);
       }else{
         AppUtil.errorToast(context, response['msg']);

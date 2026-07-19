@@ -115,10 +115,15 @@ class HomeCubit extends Cubit<HomeStates>{
          textAd  = response['text'];
          photoAd = response['photo'];
          await CashHelper.setSavedString("ad_id", response['id'].toString());
+         emit(PromotionAdReadyState());
       }
     }catch(e){
       return Future.error(e);
     }
+  }
+
+  void dismissPromotionAd() {
+    showAd = false;
   }
 
 }

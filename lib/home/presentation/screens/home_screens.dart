@@ -37,15 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late final eventcubit = AddEventCubit.get(context);
 
   var templateIds = [1,2,3,4,5];
+  bool _promotionDialogOpen = false;
 
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     cubit.getEvents();
     cubit.getInvitations();
-    cubit.showHideAds();
     authcubit.profile();
     if (templateIds.isNotEmpty) {
       int randomIndex = Random().nextInt(templateIds.length - 1);
@@ -56,51 +55,87 @@ class _HomeScreenState extends State<HomeScreen> {
 
     BottomNavCubit.get(context).showPopUpdate(context);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (cubit.showAd) {
+        _showPromotionDialog();
+      }
+    });
   }
   late List<String> icons = ['add_guard.png','add_guest.png','change_date.png','change_location.png','delete_event.png','edit_event.png','share_event.png'];
   late List<String> names = ['Add Guard'.tr(),'Add Guest'.tr(),'Change Date'.tr(),'Change Location'.tr(),'Delete Event'.tr(),'Edit Event'.tr(),'Share Event'.tr()];
 
   late List<String> banners = ['banner_1.jpg','banner_2.jpg','banner_3.jpg'];
 
+  Future<void> _showPromotionDialog() async {
+    if (!mounted || !cubit.showAd || _promotionDialogOpen) return;
+    _promotionDialogOpen = true;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          title: CustomText(
+            text: "Promotion".tr(),
+            textAlign: TextAlign.center,
+            fontWeight: FontWeight.bold,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: CachedNetworkImage(
+                    imageUrl: cubit.photoAd,
+                    height: 220,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                CustomText(
+                  text: cubit.textAd,
+                  color: AppUI.mainColor,
+                  fontSize: 15,
+                ),
+                const SizedBox(height: 25),
+                CustomButton(
+                  width: 120,
+                  height: 40,
+                  text: "close".tr(),
+                  onPressed: () {
+                    cubit.dismissPromotionAd();
+                    Navigator.of(dialogContext).pop();
+                  },
+                  textColor: AppUI.mainColor,
+                  borderColor: AppUI.mainColor,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    _promotionDialogOpen = false;
+    cubit.dismissPromotionAd();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("photo is a aaaa :${cubit.photoAd}");
-
-    if(cubit.showAd){
-      Future.delayed(Duration.zero, () async =>
-          AppUtil.dialog2(context, "Promotion".tr(), [
-            Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: CachedNetworkImage(
-                  imageUrl: cubit.photoAd,
-                  height: 220,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              const SizedBox(height: 10,),
-              CustomText(
-                text: cubit.textAd,
-                color: AppUI.mainColor,
-                fontSize: 15,
-              ),
-              const SizedBox(height: 25,),
-              CustomButton(width: 120,
-                height: 40,
-                text: "close".tr(),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                textColor: AppUI.mainColor,
-                borderColor: AppUI.mainColor,
-                color: Colors.white,
-              ),
-            ],
-          )
-        ]),);
-    }
-    return SingleChildScrollView(
+    return BlocListener<HomeCubit, HomeStates>(
+      listenWhen: (_, state) => state is PromotionAdReadyState,
+      listener: (context, state) {
+        if (_promotionDialogOpen || !cubit.showAd) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showPromotionDialog();
+        });
+      },
+      child: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,6 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 100,),
         ],
       ),
+    ),
     );
   }
 }
