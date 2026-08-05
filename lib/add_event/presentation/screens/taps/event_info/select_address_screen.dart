@@ -132,7 +132,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
   placesAutoCompleteTextField() {
     return GooglePlaceAutoCompleteTextField(
       textEditingController: searchController,
-      googleAPIKey: "AIzaSyB_kmd43O9dxVxT0uF6R2HHup9TwMg3INs",
+      googleAPIKey: "AIzaSyCLfTQO_Glvds4y-KJpKMoras96Osvo800",
       inputDecoration: InputDecoration(
         hintText: 'Enter  the address'.tr(),
         hintStyle: const TextStyle(fontSize: 16),

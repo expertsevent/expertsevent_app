@@ -62,7 +62,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyB_kmd43O9dxVxT0uF6R2HHup9TwMg3INs"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCLfTQO_Glvds4y-KJpKMoras96Osvo800"/>
 
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
             android:value="true"/>
